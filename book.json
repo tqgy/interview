@@ -1,0 +1,39 @@
+{
+     "variables": {
+         "java": true,
+         "suffix": "java"
+    },
+    "gitbook": "3.x.x",
+    "title": "算法珠玑",
+    "description": "一个精简的题库",
+	"plugins": [
+        "disqus",
+        "katex",
+        "richquotes",
+        "sitemap2",
+        "edit-link",
+        "etoc",
+        "tags",
+		"codesnippet",
+		"image-captions"
+    ],
+     "pluginsConfig": {
+        "disqus": {
+            "shortName": "algorithm"
+        },
+        "richquotes": {
+            "todos": true
+        },
+        "sitemap2": {
+            "hostname": "http://tqgynn.github.io/"
+        },
+        "edit-link": {
+            "base": "https://github.com/tqgynn/algorithm-essential/edit/master",
+            "label": {
+                    "en": "Edit Page",
+                    "zh-hans": "编辑此页",
+                    "zh-tw": "編輯此頁"
+            }
+        }
+    }
+}
