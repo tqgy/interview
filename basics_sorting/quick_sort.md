@@ -72,31 +72,6 @@ $$\sum_{i=0}^n (n-i+1) = O(n^2)$$
 
 在遍历到第 $$i$$ 个元素时，$$x[i]$$ 有两种可能，第一种是 $$x[i] \geq t$$, $$i$$ 自增往后遍历；第二种是 $$x[i] < t$$, 此时需要将 $$x[i]$$ 置于前半部分，比较简单的实现为 `swap(x[++m], x[i])`. 直至 `i == u` 时划分阶段结束，分两截递归进行快排。既然说到递归，就不得不提递归的终止条件，容易想到递归的终止步为 `l >= u`, 即索引相等或者交叉时退出。使用 Python 的实现如下所示：
 
-### Python
-
-```python
-#!/usr/bin/env python
-
-
-def qsort2(alist, l, u):
-    print(alist)
-    if l >= u:
-        return
-
-    m = l
-    for i in xrange(l + 1, u + 1):
-        if alist[i] < alist[l]:
-            m += 1
-            alist[m], alist[i] = alist[i], alist[m]
-    # swap between m and l after partition, important!
-    alist[m], alist[l] = alist[l], alist[m]
-    qsort2(alist, l, m - 1)
-    qsort2(alist, m + 1, u)
-
-unsortedArray = [6, 5, 3, 1, 8, 7, 2, 4]
-print(qsort2(unsortedArray, 0, len(unsortedArray) - 1))
-```
-
 ### Java
 
 ```java
@@ -183,38 +158,6 @@ public class Sort {
 这样一来对于数组元素均相等的情形下，每次 partition 恰好在中间元素，故共递归调用 $$\log n$$ 次，每层递归调用进行 partition 操作的比较次数总和近似为 $$n$$. 故总计需 $$n \log n$$ 次比较。[^programming_pearls]
 
 可以推断出在最坏情况下，即数组本来就有序，这种方法仍然无法避免 $$O(n^2)$$ 的厄运... 即便如此，这种两边推进的方法大大提高了分区的效率，减少了 swap 的次数。
-
-### Python
-
-```python
-#!/usr/bin/env python
-
-
-def qsort3(alist, lower, upper):
-    print(alist)
-    if lower >= upper:
-        return
-
-    pivot = alist[lower]
-    left, right = lower + 1, upper
-    while left <= right:
-        while left <= right and alist[left] < pivot:
-            left += 1
-        while left <= right and alist[right] >= pivot:
-            right -= 1
-        if left > right:
-            break
-        # swap while left <= right
-        alist[left], alist[right] = alist[right], alist[left]
-    # swap the smaller with pivot
-    alist[lower], alist[right] = alist[right], alist[lower]
-
-    qsort3(alist, lower, right - 1)
-    qsort3(alist, right + 1, upper)
-
-unsortedArray = [6, 5, 3, 1, 8, 7, 2, 4]
-print(qsort3(unsortedArray, 0, len(unsortedArray) - 1))
-```
 
 ### Java
 

@@ -29,40 +29,6 @@ O(1) time
 
 两个数进行按位与就为0了！如果不是2的整数幂则无上述关系，反证法可证之。
 
-### Python
-
-```python
-class Solution:
-    """
-    @param n: An integer
-    @return: True or false
-    """
-    def checkPowerOf2(self, n):
-        if n < 1:
-            return False
-        else:
-            return (n & (n - 1)) == 0
-```
-
-### C++
-
-```c++
-class Solution {
-public:
-    /*
-     * @param n: An integer
-     * @return: True or false
-     */
-    bool checkPowerOf2(int n) {
-        if (1 > n) {
-            return false;
-        } else {
-            return 0 == (n & (n - 1));
-        }
-    }
-};
-```
-
 ### Java
 
 ```java

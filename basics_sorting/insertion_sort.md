@@ -23,28 +23,6 @@
 
 ## Implementation
 
-### Python
-
-```python
-#!/usr/bin/env python
-
-
-def insertionSort(alist):
-    for i, item_i in enumerate(alist):
-        print alist
-        index = i
-        while index > 0 and alist[index - 1] > item_i:
-            alist[index] = alist[index - 1]
-            index -= 1
-
-        alist[index] = item_i
-
-    return alist
-
-unsorted_list = [6, 5, 3, 1, 8, 7, 2, 4]
-print(insertionSort(unsorted_list))
-```
-
 ### Java
 
 ```java
@@ -78,22 +56,6 @@ public class Sort {
 }
 ```
 
-实现(C++)：
-
-```
-template<typename T>
-void insertion_sort(T arr[], int len) {
-    int i, j;
-    T temp;
-    for (int i = 1; i < len; i++) {
-        temp = arr[i];
-        for (int j = i - 1; j >= 0 && arr[j] > temp; j--) {
-            a[j + 1] = a[j];
-        }
-        arr[j + 1] = temp;
-    }
-}
-```
 
 ## 希尔排序
 

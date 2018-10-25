@@ -30,37 +30,6 @@ Your algorithm should run in _O_(_n_) time and uses constant space.
 
 排好序后遍历桶，如果不满足 $$f[i] = i + 1$$, 那么警察叔叔就是它了！如果都满足条件怎么办？那就返回给定数组大小再加1呗。
 
-### C++
-
-```c++
-class Solution {
-public:
-    /**
-     * @param A: a vector of integers
-     * @return: an integer
-     */
-    int firstMissingPositive(vector<int> A) {
-        const int size = A.size();
-
-        for (int i = 0; i < size; ++i) {
-            while (A[i] > 0 && A[i] <= size && \
-                  (A[i] != i + 1) && (A[i] != A[A[i] - 1])) {
-                int temp = A[A[i] - 1];
-                A[A[i] - 1] = A[i];
-                A[i] = temp;
-            }
-        }
-
-        for (int i = 0; i < size; ++i) {
-            if (A[i] != i + 1) {
-                return i + 1;
-            }
-        }
-
-        return size + 1;
-    }
-};
-```
 
 ### Java
 

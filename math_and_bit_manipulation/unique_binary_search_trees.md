@@ -30,52 +30,6 @@ $$count[i] = \sum _{j = 0} ^{i - 1} (count[j] \cdot count[i - j - 1])$$
 
 网上有很多用 count[3] 的例子来得到递推关系，恕本人愚笨，在没有从 BST 的定义和有序序列个数与 BST 关系分析的基础上，我是不敢轻易说就能得到如上状态转移关系的。
 
-### Python
-
-```python
-class Solution:
-    # @paramn n: An integer
-    # @return: An integer
-    def numTrees(self, n):
-        if n < 0:
-            return -1
-
-        count = [0] * (n + 1)
-        count[0] = 1
-        for i in xrange(1, n + 1):
-            for j in xrange(i):
-                count[i] += count[j] * count[i - j - 1]
-
-        return count[n]
-```
-
-### C++
-
-```c++
-class Solution {
-public:
-    /**
-     * @paramn n: An integer
-     * @return: An integer
-     */
-    int numTrees(int n) {
-        if (n < 0) {
-            return -1;
-        }
-
-        vector<int> count(n + 1);
-        count[0] = 1;
-        for (int i = 1; i != n + 1; ++i) {
-            for (int j = 0; j != i; ++j) {
-                count[i] += count[j] * count[i - j - 1];
-            }
-        }
-
-        return count[n];
-    }
-};
-```
-
 ### Java
 
 ```java

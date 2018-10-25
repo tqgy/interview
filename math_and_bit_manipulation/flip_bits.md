@@ -35,52 +35,6 @@ Given _n_ = `31` (11111), _m_ = `14` (01110), return `2`.
 
 C/C++ 和 Java 中左溢出时会直接将高位丢弃，正好方便了我们的计算，但是在 Python 中就没这么幸运了，因为溢出时会自动转换类型，Orz... 所以使用 Python 时需要对负数专门处理，转换为求其补数中0的个数。
 
-### Python
-
-```python
-class Solution:
-    """
-    @param a, b: Two integer
-    return: An integer
-    """
-    def bitSwapRequired(self, a, b):
-        count = 0
-        a_xor_b = a ^ b
-        neg_flag = False
-        if a_xor_b < 0:
-            a_xor_b = abs(a_xor_b) - 1
-            neg_flag = True
-        while a_xor_b > 0:
-            count += 1
-            a_xor_b &= (a_xor_b - 1)
-
-        # bit_wise = 32
-        if neg_flag:
-            count = 32 - count
-        return count
-```
-
-### C++
-
-```c++
-class Solution {
-public:
-    /**
-     *@param a, b: Two integer
-     *return: An integer
-     */
-    int bitSwapRequired(int a, int b) {
-        int count = 0;
-        int a_xor_b = a ^ b;
-        while (a_xor_b != 0) {
-            ++count;
-            a_xor_b &= (a_xor_b - 1);
-        }
-
-        return count;
-    }
-};
-```
 
 ### Java
 

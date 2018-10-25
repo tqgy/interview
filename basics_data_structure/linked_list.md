@@ -10,25 +10,6 @@
 
 ## 编程实现
 
-### Python
-
-```python
-class ListNode:
-    def __init__(self, val):
-        self.val = val
-        self.next = None
-```
-
-###C++
-```cpp
-struct ListNode {
-    int val;
-    ListNode *next;
-    ListNode(int val,ListNode *next=NULL):val(val),next(next){}
-};
-
-```
-
 ### Java
 
 ```java
@@ -51,39 +32,6 @@ public class ListNode {
 链表的基本形式是：`1 -> 2 -> 3 -> null`，反转需要变为 `3 -> 2 -> 1 -> null`。这里要注意：
 - 访问某个节点 curt.next 时，要检验 curt 是否为 null。
 - 要把反转后的最后一个节点（即反转前的第一个节点）指向 null。
-
-### Python
-
-```python
-class ListNode:
-    def __init__(self, val):
-        self.val = val
-        self.next = None
-
-    # in python next is a reversed word
-    def reverse(self, head):
-        prev = None
-        while head:
-            temp = head.next
-            head.next = prev
-            prev = head
-            head = temp
-        return prev
-```
-
-###C++
-```cpp
-ListNode * ReverseList(ListNode *head){
-    ListNode *pre=NULL,*tmp;
-    while(head){
-        tmp=head->next;
-        head->next=pre;
-        pre=head;
-        head=tmp;
-    }
-    return pre;
-}
-```
 
 ### Java
 
@@ -124,24 +72,6 @@ public ListNode reverse(ListNode head) {
 #### 双向链表
 
 和单向链表的区别在于：双向链表的反转核心在于`next`和`prev`域的交换，还需要注意的是当前节点和上一个节点的递推。
-
-### Python
-
-```python
-class DListNode:
-    def __init__(self, val):
-        self.val = val
-        self.prev = self.next = null
-
-    def reverse(self, head):
-        curt = None
-        while head:
-            curt = head
-            head = curt.next
-            curt.next = curt.prev
-            curt.prev = head
-        return curt
-```
 
 ### Java
 

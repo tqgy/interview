@@ -64,38 +64,6 @@ public class Solution {
 }
 ```
 
-### C++
-
-```c++
-/**
- * forked from
- * http://www.jiuzhang.com/solutions/recover-rotated-sorted-array/
- */
-class Solution {
-private:
-    void reverse(vector<int> &nums, vector<int>::size_type start, vector<int>::size_type end) {
-        for (vector<int>::size_type i = start, j = end; i < j; ++i, --j) {
-            int temp = nums[i];
-            nums[i] = nums[j];
-            nums[j] = temp;
-        }
-    }
-
-public:
-    void recoverRotatedSortedArray(vector<int> &nums) {
-        for (vector<int>::size_type index = 0; index != nums.size() - 1; ++index) {
-            if (nums[index] > nums[index + 1]) {
-                reverse(nums, 0, index);
-                reverse(nums, index + 1, nums.size() - 1);
-                reverse(nums, 0, nums.size() - 1);
-
-                return;
-            }
-        }
-    }
-};
-```
-
 ### 源码分析
 
 首先找到分割点，随后分三步调用翻转函数。简单起见可将`vector<int>::size_type`替换为`int`

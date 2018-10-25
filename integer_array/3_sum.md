@@ -1,4 +1,6 @@
-# 3 Sum
+#15.[Mediam] 3 Sum
+
+Tags: Array, Hash Table, Mediam, Facebook, Google, Uber
 
 ## Question
 
@@ -26,38 +28,7 @@ The solution set must not contain duplicate triplets.
 
 ## 题解1 - 排序 + 哈希表 + 2 Sum
 
-相比之前的 [2 Sum](http://algorithm.yuanbin.me/zh-hans/integer_array/2_sum.html), 3 Sum 又多加了一个数，按照之前 2 Sum 的分解为『1 Sum + 1 Sum』的思路，我们同样可以将 3 Sum 分解为『1 Sum + 2 Sum』的问题，具体就是首先对原数组排序，排序后选出第一个元素，随后在剩下的元素中使用 2 Sum 的解法。
-
-### Python
-
-```python
-class Solution:
-    """
-    @param numbersbers : Give an array numbersbers of n integer
-    @return : Find all unique triplets in the array which gives the sum of zero.
-    """
-    def threeSum(self, numbers):
-        triplets = []
-        length = len(numbers)
-        if length < 3:
-            return triplets
-
-        numbers.sort()
-        for i in xrange(length):
-            target = 0 - numbers[i]
-            # 2 Sum
-            hashmap = {}
-            for j in xrange(i + 1, length):
-                item_j = numbers[j]
-                if (target - item_j) in hashmap:
-                    triplet = [numbers[i], target - item_j, item_j]
-                    if triplet not in triplets:
-                        triplets.append(triplet)
-                else:
-                    hashmap[item_j] = j
-
-        return triplets
-```
+相比之前的 [2 Sum] 3 Sum 又多加了一个数，按照之前 2 Sum 的分解为『1 Sum + 1 Sum』的思路，我们同样可以将 3 Sum 分解为『1 Sum + 2 Sum』的问题，具体就是首先对原数组排序，排序后选出第一个元素，随后在剩下的元素中使用 2 Sum 的解法。
 
 ### 源码分析
 
@@ -73,52 +44,6 @@ class Solution:
 排序时间复杂度 $$O(n \log n)$$, 两重`for`循环，时间复杂度近似为 $$O(n^2)$$，使用哈希表(字典)实现，空间复杂度为 $$O(n)$$.
 
 目前这段源码为比较简易的实现，leetcode 上的运行时间为500 + ms, 还有较大的优化空间，嗯，后续再进行优化。
-
-### C++ 
-```c++
-class Solution {
-public:
-    vector<vector<int> > threeSum(vector<int> &num) 
-    {
-        vector<vector<int> > result;
-        if (num.size() < 3) return result;
-        
-        int ans = 0;
-
-        sort(num.begin(), num.end());
-        
-        for (int i = 0;i < num.size() - 2; ++i)
-        {
-            if (i > 0 && num[i] == num[i - 1])  
-                continue;
-            int j = i + 1;
-            int k = num.size() - 1;
-
-            while (j < k)
-            {
-                ans = num[i] + num[j] + num[k];
-
-                if (ans == 0)
-                {
-                    result.push_back({num[i], num[j], num[k]});
-                    ++j;
-                    while (j < num.size() && num[j] == num[j - 1])
-                        ++j;
-                    --k;
-                    while (k >= 0 && num[k] == num[k + 1])
-                        --k;
-                }
-                else if (ans > 0) 
-                    --k;
-                else 
-                    ++j;
-            }
-        }
-        
-        return result;
-    }
-};
-```
 
 ### Java
 ```java
@@ -172,6 +97,53 @@ i每轮只走一步，j和k根据S[i]+S[j]+S[k]=ans和0的关系进行移动，�
 
 外循环i走了n轮,每轮j和k一共走n-i步，所以时间复杂度为$$O(n^2)$$。
 最终运行时间为52ms
+
+
+### 分析
+
+先排序，然后左右夹逼，复杂度 $$O(n^2)$$。
+
+这个方法可以推广到`k-sum`，先排序，然后做`k-2`次循环，在最内层循环左右夹逼，时间复杂度是 $$O(\max\{n \log n, n^{k-1}\})$$。
+
+
+### 代码
+
+```java
+// 3Sum
+// 先排序，然后左右夹逼，注意跳过重复的数
+// Time Complexity: O(n^2)，Space Complexity: O(1)
+public class Solution {
+    public List<List<Integer>> threeSum(int[] nums) {
+        List<List<Integer>> result = new ArrayList<>();
+        if (nums.length < 3) return result;
+        Arrays.sort(nums);
+        final int target = 0;
+        
+        for (int i = 0; i < nums.length - 2; ++i) {
+            if (i > 0 && nums[i] == nums[i-1]) continue;
+            int j = i+1;
+            int k = nums.length-1;
+            while (j < k) {
+                if (nums[i] + nums[j] + nums[k] < target) {
+                    ++j;
+                    while(nums[j] == nums[j-1] && j < k) ++j;
+                } else if(nums[i] + nums[j] + nums[k] > target) {
+                    --k;
+                    while(nums[k] == nums[k+1] && j < k) --k;
+                } else {
+                    result.add(Arrays.asList(nums[i], nums[j], nums[k]));
+                    ++j;
+                    --k;
+                    while(nums[j] == nums[j-1] && j < k) ++j;
+                    while(nums[k] == nums[k+1] && j < k) --k;
+                }
+            }
+        }
+        return result;
+    }
+};
+```
+
 ## Reference
 
 - [3Sum | 九章算法](http://www.jiuzhang.com/solutions/3sum/)

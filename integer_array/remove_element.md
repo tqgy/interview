@@ -34,41 +34,6 @@ being 2.
 
 使用两根指针从前往后依次遍历，一根指针遍历数组，另一根指针则指向数组当前不含给定值的索引。遍历时索引处的值不等于给定值则递增1，否则继续遍历，直至遍历结束，返回的索引值恰好是原地替换后的数组（不含给定值）的长度。
 
-### Python
-
-```python
-class Solution(object):
-    def removeElement(self, nums, val):
-        """
-        :type nums: List[int]
-        :type val: int
-        :rtype: int
-        """
-        left = 0
-        for num in nums:
-            if num != val:
-                nums[left] = num
-                left += 1
-
-        return left
-```
-
-### Go
-
-```go
-func removeElement(nums []int, val int) int {
-        left := 0
-        for _, num := range nums {
-                if num != val {
-                        nums[left] = num
-                        left++
-                }
-        }
-
-        return left
-}
-```
-
 ### Java
 
 ```java
@@ -99,46 +64,6 @@ public class Solution {
 从题解1的分析中我们可以发现在数组中元素不等于给定值时都会执行赋值及自增操作，如果给定值在数组中出现次数极少时这种方法效率不高，因此我们可以想办法减少赋值及自增操作。
 由于题中明确暗示元素的顺序可变，且新长度后的元素不用理会。我们可以使用两根指针分别往前往后遍历，头指针用于指示当前遍历的元素位置，尾指针则用于在当前元素与欲删除值相等时替换当前元素，两根指针相遇时返回尾指针索引——即删除元素后「新数组」的长度。
 
-### Python
-
-```python
-class Solution(object):
-    def removeElement(self, nums, val):
-        """
-        :type nums: List[int]
-        :type val: int
-        :rtype: int
-        """
-        left, right = 0, len(nums)
-        while left < right:
-            if nums[left] == val:
-                nums[left] = nums[right - 1]
-                right -= 1
-            else:
-                left += 1
-
-        return right
-```
-
-### C++
-
-```cpp
-class Solution {
-public:
-    int removeElement(vector<int>& nums, int val) {
-        int right = nums.size();
-        for (int i = 0; i < right; i++) {
-            if (nums[i] == val) {
-                nums[i] = nums[right - 1];
-                right--;
-                i--;
-            }
-        }
-
-        return right;
-    }
-};
-```
 
 ### Java
 

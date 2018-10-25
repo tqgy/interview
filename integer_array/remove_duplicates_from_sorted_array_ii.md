@@ -20,32 +20,6 @@ Example
 
 在上题基础上加了限制条件元素最多可重复出现两次。~~因此可以在原题的基础上添加一变量跟踪元素重复出现的次数，小于指定值时执行赋值操作。但是需要注意的是重复出现次数`occurence`的初始值(从1开始，而不是0)和reset的时机。~~这种方法比较复杂，谢谢 @meishenme 提供的简洁方法，核心思想仍然是两根指针，只不过此时新索引自增的条件是当前遍历的数组值和『新索引』或者『新索引-1』两者之一不同。
 
-### C++
-
-```c++
-class Solution {
-public:
-    /**
-     * @param A: a list of integers
-     * @return : return an integer
-     */
-    int removeDuplicates(vector<int> &nums) {
-        if (nums.size() <= 2) return nums.size();
-
-        int len = nums.size();
-        int newIndex = 1;
-        for (int i = 2; i < len; ++i) {
-            if (nums[i] != nums[newIndex] || nums[i] != nums[newIndex - 1]) {
-                ++newIndex;
-                nums[newIndex] = nums[i];
-            }
-        }
-
-        return newIndex + 1;
-    }
-};
-```
-
 ### Java
 
 ```java

@@ -19,44 +19,6 @@ O(log N) time
 
 找阶乘数中末尾的连零数量，容易想到的是找相乘能为10的整数倍的数，如 $$2 \times 5$$, $$1 \times 10$$ 等，遥想当初做阿里笔试题时遇到过类似的题，当时想着算算5和10的个数就好了，可万万没想到啊，25可以变为两个5相乘！真是蠢死了... 根据数论里面的知识，任何正整数都可以表示为它的质因数的乘积[^wikipedia]。所以比较准确的思路应该是计算质因数5和2的个数，取小的即可。质因数2的个数显然要大于5的个数，故只需要计算给定阶乘数中质因数中5的个数即可。原题的问题即转化为求阶乘数中质因数5的个数，首先可以试着分析下100以内的数，再试试100以上的数，聪明的你一定想到了可以使用求余求模等方法 :)
 
-### Python
-
-```python
-class Solution:
-    # @param {integer} n
-    # @return {integer}
-    def trailingZeroes(self, n):
-        if n < 0:
-            return -1
-
-        count = 0
-        while n > 0:
-            n /= 5
-            count += n
-
-        return count
-```
-
-### C++
-
-```c++
-class Solution {
-public:
-    int trailingZeroes(int n) {
-        if (n < 0) {
-            return -1;
-        }
-
-        int count = 0;
-        for (; n > 0; n /= 5) {
-            count += (n / 5);
-        }
-
-        return count;
-    }
-};
-```
-
 ### Java
 
 ```java
@@ -91,38 +53,6 @@ public class Solution {
 ## 题解2 - Recursive
 
 可以使用迭代处理的程序往往用递归，而且往往更为优雅。递归的终止条件为`n <= 0`.
-
-### Python
-
-```python
-class Solution:
-    # @param {integer} n
-    # @return {integer}
-    def trailingZeroes(self, n):
-        if n == 0:
-            return 0
-        elif n < 0:
-            return -1
-        else:
-            return n / 5 + self.trailingZeroes(n / 5)
-```
-
-### C++
-
-```c++
-class Solution {
-public:
-    int trailingZeroes(int n) {
-        if (n == 0) {
-            return 0;
-        } else if (n < 0) {
-            return -1;
-        } else {
-            return n / 5 + trailingZeroes(n / 5);
-        }
-    }
-};
-```
 
 ### Java
 

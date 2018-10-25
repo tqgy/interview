@@ -22,58 +22,6 @@ Given [1,2,4], return 1.
 
 以上分析看似正确无误，实则有个关键的漏洞，在排定第一个数2后，第二位数只可为1或者4，而无法为2, **故在计算最终的 index 时需要动态计算某个数的相对大小。**按照从低位到高位进行计算，我们可通过两重循环得出到某个索引处值的相对大小。
 
-### Python
-
-```python
-class Solution:
-    # @param {int[]} A an integer array
-    # @return {long} a long integer
-    def permutationIndex(self, A):
-        if A is None or len(A) == 0:
-            return 0
-
-        index = 1
-        factor = 1
-        for i in xrange(len(A) - 1, -1, -1):
-            rank = 0
-            for j in xrange(i + 1, len(A)):
-                if A[i] > A[j]:
-                    rank += 1
-
-            index += rank * factor
-            factor *= (len(A) - i)
-
-        return index
-```
-
-### C++
-
-```c++
-class Solution {
-public:
-    /**
-     * @param A an integer array
-     * @return a long integer
-     */
-    long long permutationIndex(vector<int>& A) {
-        if (A.empty()) return 0;
-
-        long long index = 1;
-        long long factor = 1;
-        for (int i = A.size() - 1; i >= 0; --i) {
-            int rank = 0;
-            for (int j = i + 1; j < A.size(); ++j) {
-                if (A[i] > A[j]) ++rank;
-            }
-            index += rank * factor;
-            factor *= (A.size() - i);
-        }
-
-        return index;
-    }
-};
-```
-
 ### Java
 
 ```java

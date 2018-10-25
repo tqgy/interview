@@ -33,65 +33,6 @@ One-pass, constant extra space.
 ```
 注意到其中的奥义了么？三个相同的数相加，不仅其和能被3整除，其二进制位上的每一位也能被3整除！因此我们只需要一个和`int`类型相同大小的数组记录每一位累加的结果即可。时间复杂度约为 $$O((3n+1)\cdot sizeof(int) \cdot 8)$$
 
-### Python
-
-```python
-class Solution(object):
-    def singleNumber(self, nums):
-        """
-        :type nums: List[int]
-        :rtype: int
-        """
-        if nums is None:
-            return 0
-
-        result = 0
-        for i in xrange(32):
-            bit_i_sum = 0
-            for num in nums:
-                bit_i_sum += ((num >> i) & 1)
-            result |= ((bit_i_sum % 3) << i)
-        return self.twos_comp(result, 32)
-    
-    def twos_comp(self, val, bits):
-        """
-        compute the 2's compliment of int value val
-        e.g. -4 ==> 11100 == -(10000) + 01100
-        """
-        return -(val & (1 << (bits - 1))) | (val & ((1 << (bits - 1)) - 1))
-```
-
-### C++
-
-```c++
-class Solution {
-public:
-	/**
-	 * @param A : An integer array
-	 * @return : An integer
-	 */
-    int singleNumberII(vector<int> &A) {
-        if (A.empty()) {
-            return 0;
-        }
-
-        int result = 0, bit_i_sum = 0;
-
-        for (int i = 0; i != 8 * sizeof(int); ++i) {
-            bit_i_sum = 0;
-            for (int j = 0; j != A.size(); ++j) {
-                // get the *i*th bit of A
-                bit_i_sum += ((A[j] >> i) & 1);
-            }
-            // set the *i*th bit of result
-            result |= ((bit_i_sum % 3) << i);
-        }
-
-        return result;
-    }
-};
-```
-
 ### Java
 
 ```java

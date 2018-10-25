@@ -172,30 +172,6 @@ public class Main {
 4. A[start], A[end]? target
     在循环结束时，因为只有1～2个元素需要讨论，所以结果非常容易解释清楚。 只存在的2种情况为， 1. `start + 1 == end` 边界指向相邻的两个元素， 这时只需要分情况讨论`start`和`end`与target的关系，就可以得出结果。 2. `start == end` 边界指向同一元素， 其实这个情况还是可以按照1的方法，分成`start``end`讨论，只不过讨论结果一样而已。
 
-### Python
-```python
-class Solution:
-    def binary_search(self, array, target):
-        if not array:
-            return -1
-
-        start, end = 0, len(array) - 1
-        while start + 1 < end:
-            mid = (start + end) / 2
-            if array[mid] == target:
-                start = mid
-            elif array[mid] < target:
-                start = mid
-            else:
-                end = mid
-
-        if array[start] == target:
-            return start
-        if array[end] == target:
-            return end
-        return -1
-```
-
 ### Java
 ```java
 class Solution {
