@@ -19,7 +19,7 @@ What is the minimum candies you must give?
 
 
 ### 迭代版
-
+{% if book.java %}
 {% codesnippet "./code/candy-1."+book.suffix, language=book.suffix %}{% endcodesnippet %}
 {% endif %}
 
