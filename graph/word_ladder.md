@@ -119,6 +119,169 @@ BFS 用作搜索，哈希表用于记录已经访问节点。在可以改变输�
 
 主要在于`getNextWords`方法的时间复杂度，时间复杂度 $$O(lmn)$$。使用了队列存储中间处理节点，空间复杂度平均条件下应该是常量级别，当然最坏条件下可能恶化为 $$O(n)$$, 即 dict 中某个点与其他点距离均为1.
 
+
+### 分析
+
+求最短路径，用广搜。
+
+
+### 单队列
+
+```java
+// Word Ladder
+// 时间复杂度O(n)，空间复杂度O(n)
+public class Solution {
+    public int ladderLength(String beginWord, String endWord, Set<String> wordList) {
+        Queue<State> q = new LinkedList<>();
+        HashSet<State> visited = new HashSet<>(); // 判重
+
+        final Function<State, Boolean> stateIsValid = (State s) ->
+                wordList.contains(s.word) || s.word.equals(endWord);
+        final Function<State, Boolean> stateIsTarget = (State s) ->
+                s.word.equals(endWord);
+
+        final Function<State, HashSet<State> > stateExtend = (State s) -> {
+            HashSet<State> result = new HashSet<>();
+
+            char[] array = s.word.toCharArray();
+            for (int i = 0; i < array.length; ++i) {
+                final char old = array[i];
+                for (char c = 'a'; c <= 'z'; c++) {
+                    // 防止同字母替换
+                    if (c == array[i]) continue;
+
+                    array[i] = c;
+                    State newState = new State(new String(array), s.level+1);
+
+                    if (stateIsValid.apply(newState) &&
+                            !visited.contains(newState)) {
+                        result.add(newState);
+                    }
+                    array[i] = old; // 恢复该单词
+                }
+            }
+
+            return result;
+        };
+
+        State startState = new State(beginWord, 0);
+        q.offer(startState);
+        visited.add(startState);
+        while (!q.isEmpty()) {
+            State state = q.poll();
+
+            if (stateIsTarget.apply(state)) {
+                return state.level + 1;
+            }
+
+
+            HashSet<State> newStates = stateExtend.apply(state);
+            for (State newState : newStates) {
+                q.offer(newState);
+                visited.add(newState);
+            }
+        }
+        return 0;
+    }
+
+    static class State {
+        String word;
+        int level;
+
+        public State(String word, int level) {
+            this.word = word;
+            this.level = level;
+        }
+
+        @Override
+        public int hashCode() {
+            return word.hashCode();
+        }
+
+        @Override
+        public boolean equals(Object other) {
+            if (this == other) return true;
+            if (this.hashCode() != other.hashCode()) return false;
+            if (!(other instanceof State)) return false;
+
+            return this.word.equals(((State) other).word);
+        }
+    }
+}
+```
+
+
+### 双队列
+
+```java
+// Word Ladder
+// 时间复杂度O(n)，空间复杂度O(n)
+public class Solution {
+    public int ladderLength(String beginWord, String endWord, Set<String> wordList) {
+        Queue<String> current = new LinkedList<>(); // 当前层
+        Queue<String> next = new LinkedList<>();    // 下一层
+        HashSet<String> visited = new HashSet<>();  // 判重
+
+        int level = -1;  // 层次
+
+        final Function<String, Boolean> stateIsValid = (String s) ->
+                wordList.contains(s) || s.equals(endWord);
+        final Function<String, Boolean> stateIsTarget = (String s) ->
+                s.equals(endWord);
+
+        final Function<String, HashSet<String> > stateExtend = (String s) -> {
+            HashSet<String> result = new HashSet<>();
+
+            char[] array = s.toCharArray();
+            for (int i = 0; i < array.length; ++i) {
+                final char old = array[i];
+                for (char c = 'a'; c <= 'z'; c++) {
+                    // 防止同字母替换
+                    if (c == array[i]) continue;
+
+                    array[i] = c;
+                    String newState = new String(array);
+
+                    if (stateIsValid.apply(newState) &&
+                            !visited.contains(newState)) {
+                        result.add(newState);
+                    }
+                    array[i] = old; // 恢复该单词
+                }
+            }
+
+            return result;
+        };
+
+        current.offer(beginWord);
+        visited.add(beginWord);
+        while (!current.isEmpty()) {
+            ++level;
+            while (!current.isEmpty()) {
+                // 千万不能用 const auto&，pop() 会删除元素，
+                // 引用就变成了悬空引用
+                String state = current.poll();
+
+                if (stateIsTarget.apply(state)) {
+                    return level + 1;
+                }
+
+                HashSet<String> newStates = stateExtend.apply(state);
+                for (String newState : newStates) {
+                    next.offer(newState);
+                    visited.add(newState);
+                }
+            }
+            // swap
+            Queue<String> tmp = current;
+            current = next;
+            next = tmp;
+        }
+        return 0;
+    }
+}
+```
+
 ## Reference
 
 - [Word Ladder 参考程序 Java/C++/Python](http://www.jiuzhang.com/solutions/word-ladder/)
