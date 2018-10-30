@@ -34,72 +34,6 @@ Given word1 = "mart" and word2 = "karma", return 3.
 
 最后返回`f[len(word1)][len(word2)]`
 
-### Python
-
-```python
-class Solution: 
-    # @param word1 & word2: Two string.
-    # @return: The minimum number of steps.
-    def minDistance(self, word1, word2):
-        len1, len2 = 0, 0
-        if word1:
-            len1 = len(word1)
-        if word2:
-            len2 = len(word2)
-        if not word1 or not word2:
-            return max(len1, len2)
-        
-        f = [[i + j for i in xrange(1 + len2)] for j in xrange(1 + len1)]
-        
-        for i in xrange(1, 1 + len1):
-            for j in xrange(1, 1 + len2):
-                if word1[i - 1] == word2[j - 1]:
-                    f[i][j] = min(f[i - 1][j - 1], 1 + f[i - 1][j], 1 + f[i][j - 1])
-                else:
-                    f[i][j] = 1 + min(f[i - 1][j - 1], f[i - 1][j], f[i][j - 1])
-        return f[len1][len2]
-```
-### C++
-
-```c++
-class Solution {
-public:
-    /**
-     * @param word1 & word2: Two string.
-     * @return: The minimum number of steps.
-     */
-    int fistance(string word1, string word2) {
-        if (word1.empty() || word2.empty()) {
-            return max(word1.size(), word2.size());
-        }
-
-        int len1 = word1.size();
-        int len2 = word2.size();
-        vector<vector<int> > f = \
-            vector<vector<int> >(1 + len1, vector<int>(1 + len2, 0));
-        for (int i = 0; i <= len1; ++i) {
-            f[i][0] = i;
-        }
-        for (int i = 0; i <= len2; ++i) {
-            f[0][i] = i;
-        }
-
-        for (int i = 1; i <= len1; ++i) {
-            for (int j = 1; j <= len2; ++j) {
-                if (word1[i - 1] == word2[j - 1]) {
-                    f[i][j] = min(f[i - 1][j - 1], 1 + f[i - 1][j]);
-                    f[i][j] = min(f[i][j], 1 + f[i][j - 1]);
-                } else {
-                    f[i][j] = min(f[i - 1][j - 1], f[i - 1][j]);
-                    f[i][j] = 1 + min(f[i][j], f[i][j - 1]);
-                }
-            }
-        }
-
-        return f[len1][len2];
-    }
-};
-```
 
 ### Java
 
@@ -150,3 +84,85 @@ public class Solution {
 ### 复杂度分析
 
 两重 for 循环，时间复杂度为 $$O(len1 \cdot len2)$$. 使用二维矩阵，空间复杂度为 $$O(len1 \cdot len2)$$.
+
+### 分析
+
+设状态为`f[i][j]`，表示`A[0,i]`和`B[0,j]`之间的最小编辑距离。设`A[0,i]`的形式是`str1c`，`B[0,j]`的形式是`str2d`，
+
+1. 如果`c==d`，则`f[i][j]=f[i-1][j-1]`；
+1. 如果`c!=d`，
+
+    1. 如果将c替换成d，则`f[i][j]=f[i-1][j-1]+1`；
+    1. 如果在c后面添加一个d，则`f[i][j]=f[i][j-1]+1`；
+    1. 如果将c删除，则`f[i][j]=f[i-1][j]+1`；
+
+
+### 动规
+
+```java
+// Edit Distance
+// 二维动规，时间复杂度O(n*m)，空间复杂度O(n*m)
+public class Solution {
+    public int minDistance(String word1, String word2) {
+        final int n = word1.length();
+        final int m = word2.length();
+        // 长度为n的字符串，有n+1个隔板
+        int[][] f = new int[n+1][m+1];
+        for (int i = 0; i <= n; i++)
+            f[i][0] = i;
+        for (int j = 0; j <= m; j++)
+            f[0][j] = j;
+
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j <= m; j++) {
+                if (word1.charAt(i - 1) == word2.charAt(j - 1))
+                    f[i][j] = f[i - 1][j - 1];
+                else {
+                    int mn = Math.min(f[i - 1][j], f[i][j - 1]);
+                    f[i][j] = 1 + Math.min(f[i - 1][j - 1], mn);
+                }
+            }
+        }
+        return f[n][m];
+    }
+}
+```
+
+
+### 动规+滚动数组
+
+```java
+// Edit Distance
+// 二维动规+滚动数组
+// 时间复杂度O(n*m)，空间复杂度O(n)
+public class Solution {
+    public int minDistance(String word1, String word2) {
+        if (word1.length() < word2.length())
+            return minDistance(word2, word1);
+
+        int[] f = new int[word2.length() + 1];
+        int upper_left = 0; // 额外用一个变量记录f[i-1][j-1]
+
+        for (int i = 0; i <= word2.length(); ++i)
+            f[i] = i;
+
+        for (int i = 1; i <= word1.length(); ++i) {
+            upper_left = f[0];
+            f[0] = i;
+
+            for (int j = 1; j <= word2.length(); ++j) {
+                int upper = f[j];
+
+                if (word1.charAt(i - 1) == word2.charAt(j - 1))
+                    f[j] = upper_left;
+                else
+                    f[j] = 1 + Math.min(upper_left, Math.min(f[j], f[j - 1]));
+
+                upper_left = upper;
+            }
+        }
+
+        return f[word2.length()];
+    }
+}
+```

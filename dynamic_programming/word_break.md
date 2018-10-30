@@ -29,71 +29,6 @@ Return true because "leetcode" can be segmented as "leet code".
 
 考虑到单词长度通常不会太长，故在`s`较长时使用自底向上效率更高。
 
-### Python
-
-```python
-class Solution:
-    # @param s, a string
-    # @param wordDict, a set<string>
-    # @return a boolean
-    def wordBreak(self, s, wordDict):
-        if not s:
-            return True
-        if not wordDict:
-            return False
-
-        max_word_len = max([len(w) for w in wordDict])
-        can_break = [True]
-        for i in xrange(len(s)):
-            can_break.append(False)
-            for j in xrange(i, -1, -1):
-                # optimize for too long interval
-                if i - j + 1 > max_word_len:
-                    break
-                if can_break[j] and s[j:i + 1] in wordDict:
-                    can_break[i + 1] = True
-                    break
-        return can_break[-1]
-```
-
-### C++
-
-```c++
-class Solution {
-public:
-    bool wordBreak(string s, unordered_set<string>& wordDict) {
-        if (s.empty()) return true;
-        if (wordDict.empty()) return false;
-
-        // get the max word length of wordDict
-        int max_word_len = 0;
-        for (unordered_set<string>::iterator it = wordDict.begin();
-	     it != wordDict.end(); ++it) {
-
-            max_word_len = max(max_word_len, (*it).size());
-        }
-
-        vector<bool> can_break(s.size() + 1, false);
-        can_break[0] = true;
-        for (int i = 1; i <= s.size(); ++i) {
-            for (int j = i - 1; j >= 0; --j) {
-                // optimize for too long interval
-                if (i - j > max_word_len) break;
-
-                if (can_break[j] && 
-		    wordDict.find(s.substr(j, i - j)) != wordDict.end()) {
-
-                    can_break[i] = true;
-                    break;
-                }
-            }
-        }
-
-        return can_break[s.size()];
-    }
-};
-```
-
 ### Java
 
 ```java
@@ -139,3 +74,59 @@ Python 之类的动态语言无需初始化指定大小的数组，使用时下�
 3. 两重 for 循环，内循环在超出最大单词长度时退出，故最坏情况下两重 for 循环的时间复杂度为 $$O(n L_w)$$.
 4. 故总的时间复杂度近似为 $$O(n L_w)$$.
 5. 使用了与字符串长度几乎等长的布尔数组和临时单词`word`，空间复杂度近似为 $$O(n)$$.
+
+
+
+### 分析
+
+设状态为`f(i)`，表示`s[0,i)`是否可以分词，则状态转移方程为
+
+`f(i) = any_of(f(j) && s[j,i] in dict), 0 <= j < i`
+
+
+### 深搜
+
+```java
+// Word Break
+// 深搜，超时
+// 时间复杂度O(2^n)，空间复杂度O(n)
+class Solution {
+    public boolean wordBreak(String s, Set<String> dict) {
+        return dfs(s, dict, 0, 1);
+    }
+    private static boolean dfs(String s, Set<String> dict,
+                    int start, int cur) {
+        if (cur == s.length()) {
+            return dict.contains(s.substring(start, cur));
+        }
+        if (dfs(s, dict, start, cur+1)) return true; // no cut
+        if (dict.contains(s.substring(start, cur))) // cut here
+            if (dfs(s, dict, cur+1, cur+1)) return true;
+        return false;
+    }
+}
+```
+
+
+### 动规
+
+```java
+// Word Break
+// 动规，时间复杂度O(n^2)，空间复杂度O(n)
+class Solution {
+    public boolean wordBreak(String s, Set<String> dict) {
+        // 长度为n的字符串有n+1个隔板
+        boolean[] f = new boolean[s.length() + 1];
+        f[0] = true; // 空字符串
+        for (int i = 1; i <= s.length(); ++i) {
+            for (int j = i - 1; j >= 0; --j) {
+                if (f[j] && dict.contains(s.substring(j, i))) {
+                    f[i] = true;
+                    break;
+                }
+            }
+        }
+        return f[s.length()];
+    }
+}
+```

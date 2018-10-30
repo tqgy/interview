@@ -28,54 +28,6 @@ Return `3`.
 
 要想得知不同子序列的个数，那么我们就不能在 S 和 T 中首字符不等时简单移除 S 中的首字符了，取而代之的方法应该是先将 S 复制一份，再用移除 S 中首字符后的新字符串和 T 进行比较，这点和深搜中的剪枝函数的处理有点类似。
 
-### Python
-
-```python
-class Solution:
-    # @param S, T: Two string.
-    # @return: Count the number of distinct subsequences
-    def numDistinct(self, S, T):
-        if S is None or T is None:
-            return 0
-        if len(S) < len(T):
-            return 0
-        if len(T) == 0:
-            return 1
-
-        num = 0
-        for i, Si in enumerate(S):
-            if Si == T[0]:
-                num += self.numDistinct(S[i + 1:], T[1:])
-
-        return num
-```
-
-### C++
-
-```c++
-class Solution {
-public:
-    /**
-     * @param S, T: Two string.
-     * @return: Count the number of distinct subsequences
-     */
-    int numDistinct(string &S, string &T) {
-        if (S.size() < T.size()) return 0;
-        if (T.empty()) return 1;
-
-        int num = 0;
-        for (int i = 0; i < S.size(); ++i) {
-            if (S[i] == T[0]) {
-                string Si = S.substr(i + 1);
-                string t = T.substr(1);
-                num += numDistinct(Si, t);
-            }
-        }
-
-        return num;
-    }
-};
-```
 
 ### Java
 
@@ -125,62 +77,6 @@ public class Solution {
 2. `S[i] != T[j]`: 最后一个字符不等时，S[i] 不可能和 T[j] 配对，故 f[i][j] = f[i-1][j]
 
 为便于处理第一个字符相等的状态(便于累加)，初始化f[i][0]为1, 其余为0. 这里对于 S 或 T 为空串时返回0，返回1 也能说得过去。
-
-### Python
-
-```python
-class Solution:
-    # @param S, T: Two string.
-    # @return: Count the number of distinct subsequences
-    def numDistinct(self, S, T):
-        if S is None or T is None:
-            return 0
-        if len(S) < len(T):
-            return 0
-        if len(T) == 0:
-            return 1
-
-        f = [[0 for i in xrange(len(T) + 1)] for j in xrange(len(S) + 1)]
-        for i, Si in enumerate(S):
-            f[i][0] = 1
-            for j, Tj in enumerate(T):
-                if Si == Tj:
-                    f[i + 1][j + 1] = f[i][j + 1] + f[i][j]
-                else:
-                    f[i + 1][j + 1] = f[i][j + 1]
-
-        return f[len(S)][len(T)]
-```
-
-### C++
-
-```c++
-class Solution {
-public:
-    /**
-     * @param S, T: Two string.
-     * @return: Count the number of distinct subsequences
-     */
-    int numDistinct(string &S, string &T) {
-        if (S.size() < T.size()) return 0;
-        if (T.empty()) return 1;
-
-        vector<vector<int> > f(S.size() + 1, vector<int>(T.size() + 1, 0));
-        for (int i = 0; i < S.size(); ++i) {
-            f[i][0] = 1;
-            for (int j = 0; j < T.size(); ++j) {
-                if (S[i] == T[j]) {
-                    f[i + 1][j + 1] = f[i][j + 1] + f[i][j];
-                } else {
-                    f[i + 1][j + 1] = f[i][j + 1];
-                }
-            }
-        }
-
-        return f[S.size()][T.size()];
-    }
-};
-```
 
 ### Java
 
@@ -249,6 +145,14 @@ public class Solution {
     }
 }
 ```
+### 分析
+
+设状态为`f(i,j)`，表示`T[0,j]`在`S[0,i]`里出现的次数。首先，无论`S[i]`和`T[j]`是否相等，若不使用`S[i]`，则`f(i,j)=f(i-1,j)`；若`S[i]==T[j]`，则可以使用`S[i]`，此时`f(i,j)=f(i-1,j)+f(i-1, j-1)`。
+
+
+### 代码
+
+{% codesnippet "./code/distinct-subsequences."+book.suffix, language=book.suffix %}{% endcodesnippet %}
 
 ## Reference
 

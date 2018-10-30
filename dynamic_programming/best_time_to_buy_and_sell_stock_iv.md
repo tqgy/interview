@@ -37,102 +37,6 @@ f[i][j] = max(f[x][j - 1] + profit(x + 1, i))
 
 简便起见，初始化二维矩阵为0，下标尽可能从1开始，便于理解。
 
-### Python
-
-```python
-class Solution:
-    """
-    @param k: an integer
-    @param prices: a list of integer
-    @return: an integer which is maximum profit
-    """
-    def maxProfit(self, k, prices):
-        if prices is None or len(prices) <= 1 or k <= 0:
-            return 0
-
-        n = len(prices)
-        # k >= prices.length / 2 ==> multiple transactions Stock II
-        if k >= n / 2:
-            profit_max = 0
-            for i in xrange(1, n):
-                diff = prices[i] - prices[i - 1]
-                if diff > 0:
-                    profit_max += diff
-            return profit_max
-
-        f = [[0 for i in xrange(k + 1)] for j in xrange(n + 1)]
-        for j in xrange(1, k + 1):
-            for i in xrange(1, n + 1):
-                for x in xrange(0, i + 1):
-                    f[i][j] = max(f[i][j], f[x][j - 1] + self.profit(prices, x + 1, i))
-
-        return f[n][k]
-
-    # calculate the profit of prices(l, u)
-    def profit(self, prices, l, u):
-        if l >= u:
-            return 0
-        valley = 2**31 - 1
-        profit_max = 0
-        for price in prices[l - 1:u]:
-            profit_max = max(profit_max, price - valley)
-            valley = min(valley, price)
-        return profit_max
-```
-
-### C++
-
-```c++
-class Solution {
-public:
-    /**
-     * @param k: An integer
-     * @param prices: Given an integer array
-     * @return: Maximum profit
-     */
-    int maxProfit(int k, vector<int> &prices) {
-        if (prices.size() <= 1 || k <= 0) return 0;
-
-        int n = prices.size();
-        // k >= prices.length / 2 ==> multiple transactions Stock II
-        if (k >= n / 2) {
-            int profit_max = 0;
-            for (int i = 1; i < n; ++i) {
-                int diff = prices[i] - prices[i - 1];
-                if (diff > 0) {
-                    profit_max += diff;
-                }
-            }
-            return profit_max;
-        }
-
-        vector<vector<int> > f = vector<vector<int> >(n + 1, vector<int>(k + 1, 0));
-        for (int j = 1; j <= k; ++j) {
-            for (int i = 1; i <= n; ++i) {
-                for (int x = 0; x <= i; ++x) {
-                    f[i][j] = max(f[i][j], f[x][j - 1] + profit(prices, x + 1, i));
-                }
-            }
-        }
-
-        return f[n][k];
-    }
-
-private:
-    int profit(vector<int> &prices, int l, int u) {
-        if (l >= u) return 0;
-
-        int valley = INT_MAX;
-        int profit_max = 0;
-        for (int i = l - 1; i < u; ++i) {
-            profit_max = max(profit_max, prices[i] - valley);
-            valley = min(valley, prices[i]);
-        }
-
-        return profit_max;
-    }
-};
-```
 
 ### Java
 
@@ -190,6 +94,31 @@ class Solution {
 ### 复杂度分析
 
 三重循环，时间复杂度近似为 $$O(n^2 \cdot k)$$, 使用了 f 二维数组，空间复杂度为 $$O(n \cdot k)$$.
+
+### 分析
+
+设两个状态，`global[i][j]` 表示i天前最多可以进行j次交易的最大利润，`local[i][j]`表示i天前最多可以进行j次交易，且在第i天进行了第j次交易的最大利润。状态转移方程如下：
+
+```
+local[i][j] = max(global[i-1][j-1] + max(diff,0), local[i-1][j]+diff)
+global[i][j] = max(local[i][j], global[i-1][j])
+```
+
+关于`global`的状态转移方程比较简单，不断地和已经计算出的local进行比较，把大的保存在global中。
+
+关于`local`的状态转移方程，取下面二者中较大的一个：
+
+* 全局前`i-1`天进行了`j-1`次交易，然后然后加上今天的交易产生的利润（如果赚钱就交易，不赚钱就不交易，什么也不发生，利润是0）
+* 局部前`i-1`天进行了`j`次交易，然后加上今天的差价（`local[i-1][j]`是第`i-1`天卖出的交易，它加上diff后变成第`i`天卖出，并不会增加交易次数。无论`diff`是正还是负都要加上，否则就不满足`local[i][j]`必须在最后一天卖出的条件了）
+
+注意，当`k`大于数组的大小时，上述算法将变得低效，此时可以改为不限交易次数的方式解决，即等价于 "Best Time to Buy and Sell Stock II"。
+
+
+### 解法1
+
+{% codesnippet "./code/best-time-to-buy-and-sell-stock-iv-1."+book.suffix, language=book.suffix %}{% endcodesnippet %}
+
+### 解法2 最长m段子段和
 
 ## Reference
 

@@ -77,102 +77,6 @@ public class Solution {
 
 在 `(s1[i1] == s3[i3]) && (s2[i2] == s3[i3])` 时分两种情况考虑，即让 s1[i1] 和 s3[i3] 配对或者 s2[i2] 和 s3[i3] 配对，那么嵌套调用时新生成的字符串则分别为 `s1[1+i1:], s2[i2], s3[1+i3:]` 和 `s1[i1:], s2[1+i2], s3[1+i3:]`. 嵌套调用结束后立即返回最终结果，因为递归调用时整个结果已经知晓，不立即返回则有可能会产生错误结果，递归调用并未影响到调用处的 i1 和 i2.
 
-### Python
-
-```python
-class Solution:
-    """
-    @params s1, s2, s3: Three strings as description.
-    @return: return True if s3 is formed by the interleaving of
-             s1 and s2 or False if not.
-    @hint: you can use [[True] * m for i in range (n)] to allocate a n*m matrix.
-    """
-    def isInterleave(self, s1, s2, s3):
-        len1 = 0 if s1 is None else len(s1)
-        len2 = 0 if s2 is None else len(s2)
-        len3 = 0 if s3 is None else len(s3)
-
-        if len3 != len1 + len2:
-            return False
-
-        i1, i2 = 0, 0
-        for i3 in xrange(len(s3)):
-            result = False
-            if (i1 < len1 and s1[i1] == s3[i3]) and \
-               (i1 < len1 and s1[i1] == s3[i3]):
-                # s1[1+i1:], s2[i2:], s3[1+i3:]
-                case1 = self.isInterleave(s1[1 + i1:], s2[i2:], s3[1 + i3:])
-                # s1[i1:], s2[1+i2:], s3[1+i3:]
-                case2 = self.isInterleave(s1[i1:], s2[1 + i2:], s3[1 + i3:])
-                return case1 or case2
-
-            if i1 < len1 and s1[i1] == s3[i3]:
-                i1 += 1
-                result = True
-                continue
-
-            if i2 < len2 and s2[i2] == s3[i3]:
-                i2 += 1
-                result = True
-                continue
-
-            # return instantly if both s1 and s2 can not pair with s3
-            if not result:
-                return False
-
-        return True
-```
-
-### C++
-
-```c++
-class Solution {
-public:
-    /**
-     * Determine whether s3 is formed by interleaving of s1 and s2.
-     * @param s1, s2, s3: As description.
-     * @return: true of false.
-     */
-    bool isInterleave(string s1, string s2, string s3) {
-        int len1 = s1.size();
-        int len2 = s2.size();
-        int len3 = s3.size();
-
-        if (len3 != len1 + len2) return false;
-
-        int i1 = 0, i2 = 0;
-        for (int i3 = 0; i3 < len3; ++i3) {
-            bool result = false;
-            if (i1 < len1 && s1[i1] == s3[i3] &&
-                i2 < len2 && s2[i2] == s3[i3]) {
-                // s1[1+i1:], s2[i2:], s3[1+i3:]
-                bool case1 = isInterleave(s1.substr(1 + i1), s2.substr(i2), s3.substr(1 + i3));
-                // s1[i1:], s2[1+i2:], s3[1+i3:]
-                bool case2 = isInterleave(s1.substr(i1), s2.substr(1 + i2), s3.substr(1 + i3));
-                // return instantly
-                return case1 || case2;
-	        }
-
-            if (i1 < len1 && s1[i1] == s3[i3]) {
-                i1++;
-                result = true;
-                continue;
-            }
-
-            if (i2 < len2 && s2[i2] == s3[i3]) {
-                i2++;
-                result = true;
-                continue;
-            }
-
-            // return instantly if both s1 and s2 can not pair with s3
-            if (!result) return false;
-        }
-
-        return true;
-    }
-};
-```
 
 ### Java
 
@@ -237,80 +141,6 @@ f[i1][i2] = (s1[i1 - 1] == s3[i1 + i2 - 1] && f[i1 - 1][i2]) ||
 
 这道题的初始化有点 trick, 考虑到空串的可能，需要单独初始化 `f[*][0]` 和 `f[0][*]`.
 
-### Python
-
-```python
-class Solution:
-    """
-    @params s1, s2, s3: Three strings as description.
-    @return: return True if s3 is formed by the interleaving of
-             s1 and s2 or False if not.
-    @hint: you can use [[True] * m for i in range (n)] to allocate a n*m matrix.
-    """
-    def isInterleave(self, s1, s2, s3):
-        len1 = 0 if s1 is None else len(s1)
-        len2 = 0 if s2 is None else len(s2)
-        len3 = 0 if s3 is None else len(s3)
-
-        if len3 != len1 + len2:
-            return False
-
-        f = [[True] * (1 + len2) for i in xrange (1 + len1)]
-        # s1[i1 - 1] == s3[i1 + i2 - 1] && f[i1 - 1][i2]
-        for i in xrange(1, 1 + len1):
-            f[i][0] = s1[i - 1] == s3[i - 1] and f[i - 1][0]
-        # s2[i2 - 1] == s3[i1 + i2 - 1] && f[i1][i2 - 1]
-        for i in xrange(1, 1 + len2):
-            f[0][i] = s2[i - 1] == s3[i - 1] and f[0][i - 1]
-        # i1 >= 1, i2 >= 1
-        for i1 in xrange(1, 1 + len1):
-            for i2 in xrange(1, 1 + len2):
-                case1 = s1[i1 - 1] == s3[i1 + i2 - 1] and f[i1 - 1][i2]
-                case2 = s2[i2 - 1] == s3[i1 + i2 - 1] and f[i1][i2 - 1]
-                f[i1][i2] = case1 or case2
-
-        return f[len1][len2]
-```
-
-### C++
-
-```c++
-class Solution {
-public:
-    /**
-     * Determine whether s3 is formed by interleaving of s1 and s2.
-     * @param s1, s2, s3: As description.
-     * @return: true of false.
-     */
-    bool isInterleave(string s1, string s2, string s3) {
-        int len1 = s1.size();
-        int len2 = s2.size();
-        int len3 = s3.size();
-
-        if (len3 != len1 + len2) return false;
-
-        vector<vector<bool> > f(1 + len1, vector<bool>(1 + len2, true));
-        // s1[i1 - 1] == s3[i1 + i2 - 1] && f[i1 - 1][i2]
-        for (int i = 1; i <= len1; ++i) {
-            f[i][0] = s1[i - 1] == s3[i - 1] && f[i - 1][0];
-        }
-        // s2[i2 - 1] == s3[i1 + i2 - 1] && f[i1][i2 - 1]
-        for (int i = 1; i <= len2; ++i) {
-            f[0][i] = s2[i - 1] == s3[i - 1] && f[0][i - 1];
-        }
-        // i1 >= 1, i2 >= 1
-        for (int i1 = 1; i1 <= len1; ++i1) {
-            for (int i2 = 1; i2 <= len2; ++i2) {
-                bool case1 = s1[i1 - 1] == s3[i1 + i2 - 1] && f[i1 - 1][i2];
-                bool case2 = s2[i2 - 1] == s3[i1 + i2 - 1] && f[i1][i2 - 1];
-                f[i1][i2] = case1 || case2;
-            }
-        }
-
-        return f[len1][len2];
-    }
-};
-```
 
 ### Java
 
@@ -359,6 +189,31 @@ public class Solution {
 ### 复杂度分析
 
 双重 for 循环，时间复杂度为 $$O(n^2)$$, 使用了二维矩阵，空间复杂度 $$O(n^2)$$. 其中空间复杂度可以优化。
+
+### 分析
+
+设状态`f[i][j]`，表示`s1[0,i]`和`s2[0,j]`，匹配`s3[0, i+j]`。如果s1的最后一个字符等于s3的最后一个字符，则`f[i][j]=f[i-1][j]`；如果s2的最后一个字符等于s3的最后一个字符，则`f[i][j]=f[i][j-1]`。因此状态转移方程如下：
+
+```
+f[i][j] = (s1[i - 1] == s3 [i + j - 1] && f[i - 1][j])
+       || (s2[j - 1] == s3 [i + j - 1] && f[i][j - 1]);
+```
+
+
+### 递归
+
+{% codesnippet "./code/interleaving-string-1."+book.suffix, language=book.suffix %}{% endcodesnippet %}
+
+
+### 动规
+
+{% codesnippet "./code/interleaving-string-2."+book.suffix, language=book.suffix %}{% endcodesnippet %}
+
+
+### 动规+滚动数组
+
+{% codesnippet "./code/interleaving-string-3."+book.suffix, language=book.suffix %}{% endcodesnippet %}
+
 
 ## Reference
 

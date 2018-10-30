@@ -21,51 +21,6 @@ Given an example [3,2,3,1,2], return 1
 
 最多只允许进行一次交易，显然我们只需要把波谷和波峰分别找出来就好了。但是这样的话问题又来了，有多个波峰和波谷时怎么办？——找出差值最大的一对波谷和波峰。故需要引入一个索引用于记录当前的波谷，结果即为当前索引值减去波谷的值。
 
-### Python
-
-```python
-class Solution:
-    """
-    @param prices: Given an integer array
-    @return: Maximum profit
-    """
-    def maxProfit(self, prices):
-        if prices is None or len(prices) <= 1:
-            return 0
-
-        profit = 0
-        cur_price_min = 2**31 - 1
-        for price in prices:
-            profit = max(profit, price - cur_price_min)
-            cur_price_min = min(cur_price_min, price)
-
-        return profit
-```
-
-### C++
-
-```c++
-class Solution {
-public:
-    /**
-     * @param prices: Given an integer array
-     * @return: Maximum profit
-     */
-    int maxProfit(vector<int> &prices) {
-        if (prices.size() <= 1) return 0;
-
-        int profit = 0;
-        int cur_price_min = INT_MAX;
-        for (int i = 0; i < prices.size(); ++i) {
-            profit = max(profit, prices[i] - cur_price_min);
-            cur_price_min = min(cur_price_min, prices[i]);
-        }
-
-        return profit;
-    }
-};
-```
-
 ### Java
 
 ```java
