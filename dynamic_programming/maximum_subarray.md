@@ -173,7 +173,6 @@ $$target = \max\left\{f[j]\right\}, 1 \leq j \leq n$$
 
 ### 思路5
 
-{% if book.java %}
 ```java
 // Maximum Subarray
 // 时间复杂度O(n)，空间复杂度O(n)
