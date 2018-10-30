@@ -116,3 +116,12 @@ public class Solution {
 ### 复杂度分析
 
 每个节点最多被遍历若干次，时间复杂度 $$O(n)$$, 空间复杂度 $$O(1)$$.
+
+
+### 代码
+
+{% codesnippet "./code/swap-nodes-in-pairs-1."+book.suffix, language=book.suffix %}{% endcodesnippet %}
+
+下面这种写法更简洁，但题目规定了不准这样做。
+
+{% codesnippet "./code/swap-nodes-in-pairs-2."+book.suffix, language=book.suffix %}{% endcodesnippet %}

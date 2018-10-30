@@ -102,6 +102,22 @@ bool isMatch(string s, string p) {
 ```
 
 
+### 分析
+
+跟上一题很类似。
+
+主要是`'*'`的匹配问题。`p`每遇到一个`'*'`，就保留住当前`'*'`的坐标和`s`的坐标，然后`s`从前往后扫描，如果不成功，则`s++`，重新扫描。
+
+
+### 递归版
+
+{% codesnippet "./code/wildcard-matching-1."+book.suffix, language=book.suffix %}{% endcodesnippet %}
+
+
+### 迭代版
+
+{% codesnippet "./code/wildcard-matching-2."+book.suffix, language=book.suffix %}{% endcodesnippet %}
+
 ## Reference
 
 - Soulmachine 的 leetcode 题解

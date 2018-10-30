@@ -23,44 +23,6 @@ Could you do it in O(n) time and O(1) space?
 
 根据栈的特性(FILO)，可以首先遍历链表并入栈(最后访问栈时则反过来了)，随后再次遍历链表并比较当前节点和栈顶元素，若比较结果完全相同则为回文。 又根据回文的特性，实际上还可以只遍历链表前半部分节点，再用栈中的元素和后半部分元素进行比较，分链表节点个数为奇数或者偶数考虑即可。由于链表长度未知，因此可以考虑使用快慢指针求得。
 
-### Python
-
-```python
-## Definition for singly-linked list
-# class ListNode:
-#    def __init__(self, val):
-#        self.val = val
-#        self.next = None
-
-class Solution:
-    # @param head, a ListNode
-    # @return a boolean
-    def is_palindrome(self, head):
-        if not head or not head.next:
-            return True
-
-        stack = []
-        slow, fast = head, head.next
-        while fast and fast.next:
-            stack.append(slow.val)
-            slow = slow.next
-            fast = fast.next.next
-
-        # for even numbers add mid
-        if fast:
-            stack.append(slow.val)
-
-        curt = slow.next
-        while curt:
-            if curt.val != stack.pop():
-                return False
-            curt = curt.next
-        return True
-```
-#### 源码分析
-注意， 在python code中， slow 和 fast pointer 分别指向head 和head.next。 这样指向的好处是：当linked－list 有奇数个数字的时候， 最终位置，slow会停在mid的位置， 而fast指向空。 当linked－list有偶数个node时， 最终位置，slow和slow.next为中间的两个元素， fast指向最后一个node。所以slow的最终位置总是mid 或者mid 偏左一点的位置。这样的位置非常方便分割linked－list，以及其他计算。推荐采用这种方法来寻找linked－list的mid位置。模版优势，请见solution2。
-
-
 ### Java
 
 ```java
@@ -120,42 +82,6 @@ public class Solution {
 3. 逐个比较前后部分节点值。
 4. 链表复原，翻转后半部分链表。
 
-### Python
-```python
-# class ListNode:
-#     def __init__(self, val):
-#         self.val = val
-#         self.next = None
-class Solution:
-    def is_palindrome(self, head):
-        if not head or not head.next:
-            return True
-
-        slow, fast = head, head.next
-        while fast and fast.next:
-            fast = fast.next.next
-            slow = slow.next
-
-        mid = slow.next
-        # break
-        slow.next = None
-        rhead = self.reverse(mid)
-        while rhead:
-            if rhead.val != head.val:
-                return False
-            rhead = rhead.next
-            head = head.next
-        return True
-
-    def reverse(self, head):
-        dummy = ListNode(-1)
-        while head:
-            temp = head.next
-            head.next = dummy.next
-            dummy.next = head
-            head = temp
-        return dummy.next
-```
 
 #### 源码分析
 对比Java code， 会发现，把slow 和fast pointer 放在head和head.next减少了对odd 或者even number的判断。因为slow总是在mid的位置或者mid偏左的位置上， 所以把mid assign 为slow.next总是对的。
@@ -221,53 +147,6 @@ public class Solution {
 }
 ```
 
-### C++
-```c++
-class Solution {
-public:
-    bool isPalindrome(ListNode* head) {
-        if (!head || !head->next) return true;  
-
-        // find middle
-        ListNode* slow = head, *fast = head;
-        while (fast && fast->next) {               
-            slow = slow->next;
-            fast = fast->next->next;
-        }
-
-        // skip mid node if the number of ListNode is odd
-        if (fast) slow = slow->next;    
-
-        // reverse right part of List
-        ListNode* rHead = reverse(slow);  
-        ListNode* lCurr = head, *rCurr = rHead;
-        while (rCurr) {
-            if (rCurr->val != lCurr->val) {
-                reverse(rHead);
-                return false;
-            }
-            lCurr = lCurr->next;
-            rCurr = rCurr->next;
-        }
-        // recover right part of List
-        reverse(rHead);            
-
-        return true;
-    }
-
-    ListNode* reverse(ListNode* head) {
-        ListNode* prev = NULL;
-        while (head) {                           
-            ListNode* after = head->next;   
-            head->next = prev;
-            prev = head;
-            head = after;
-        }
-        return prev;
-    }
-}
-```
-
 ### 源码分析
 
 连续翻转两次右半部分链表即可复原原链表，将一些功能模块如翻转等尽量模块化。
@@ -279,21 +158,6 @@ public:
 ## 题解3 - 递归(TLE)
 
 递归需要两个重要条件，递归步的建立和递归终止条件。对于回文比较，理所当然应该递归比较第 i 个节点和第 n-i 个节点，那么问题来了，如何构建这个递归步？大致可以猜想出来递归的传入参数应该包含两个节点，用以指代第 i 个节点和第 n-i 个节点。返回参数应该包含布尔值(用以提前返回不是回文的情况)和左半部分节点的下一个节点(用以和右半部分的节点进行比较)。由于需要返回两个值，在 Java 中需要使用自定义类进行封装，C/C++ 中则可以使用指针改变在**递归调用后**进行比较时节点的值。
-
-### Python
-```python
-class Solution:
-    def is_palindrome(self, head):
-        result = [head, True]
-        self.helper(head, result)
-        return result[1]
-
-    def helper(self, right, result):
-        if right:
-            self.helper(right.next, result)
-            is_pal =  result[0].val == right.val and result[1]
-            result = [result[0].next, is_pal]
-```
 
 ### Java
 
@@ -365,6 +229,16 @@ class Solution:
 ### 复杂度分析
 时间复杂度 $$O(n)$$, 空间复杂度也是 $$O(n)$$
 
+### 分析
+
+首先要寻找中点，原理是使用快慢指针，每次快指针走两步，慢指针走一步。同时还要用栈，每次慢指针走一步，都把值存入栈中。等快指针走完时，链表的前半段都存入栈中了。最后慢指针继续往前走，每次与栈顶元素进行比较。空间复杂度`O(n)`。
+
+如何做到用`O(1)`空间呢？可以先找到中点，把后半段reverse一下，然后比较两个小链表。
+
+
+### 代码
+
+{% codesnippet "./code/palindrome-linked-list."+book.suffix, language=book.suffix %}{% endcodesnippet %}
 
 ## Reference
 

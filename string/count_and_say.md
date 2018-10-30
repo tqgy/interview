@@ -24,91 +24,6 @@ Note: The sequence of integers will be represented as a string.
 
 题目大意是找第 n 个数(字符串表示)，规则则是对于连续字符串，表示为重复次数+数本身。那么其中的核心过程则是根据上一个字符串求得下一个字符串，从 `'1'` 开始迭代 n - 1 次即可。
 
-### Python
-
-```python
-class Solution(object):
-    def countAndSay(self, n):
-        """
-        :type n: int
-        :rtype: str
-        """
-        if n <= 0:
-            return ''
-        seq = '1'
-        for _ in range(n - 1):
-            seq = re.sub(r'(.)\1*', lambda m: str(len(m.group(0))) + m.group(1), seq)
-
-        return seq
-```
-
-### Python
-
-```python
-class Solution(object):
-    def countAndSay(self, n):
-        """
-        :type n: int
-        :rtype: str
-        """
-        if n <= 0:
-            return ''
-
-        curr_seq = '1'
-        for j in range(n - 1):
-            curr_seq = self._get_next_seq(curr_seq)
-
-        return curr_seq
-
-    def _get_next_seq(self, seq):
-        next_seq = ''
-        cnt = 1
-        for i in range(len(seq)):
-            if i + 1 < len(seq) and seq[i] == seq[i + 1]:
-                cnt += 1
-            else:
-                next_seq += str(cnt)
-                next_seq += seq[i]
-                cnt = 1
-
-        return next_seq
-```
-
-### C++
-
-```cpp
-class Solution {
-public:
-    string countAndSay(int n) {
-        if (n <= 0) return "";
-
-        string curr_seq = "1";
-        while (--n) {
-            curr_seq = getNextSeq(curr_seq);
-        }
-
-        return curr_seq;
-    }
-
-private:
-    string getNextSeq(string seq) {
-        string next_seq = "";
-        int cnt = 1;
-        for (int i = 0; i < seq.length(); i++) {
-            if (i + 1 < seq.length() && seq[i] == seq[i + 1]) {
-                cnt++;
-            } else {
-                next_seq.push_back('0' + cnt);
-                next_seq.push_back(seq[i]);
-                cnt = 1;
-            }
-        }
-
-        return next_seq;
-    }
-};
-```
-
 ### Java
 
 ```java
@@ -150,59 +65,6 @@ public class Solution {
 
 注意递归终止条件即可，核心过程差不多。
 
-### Python
-
-```python
-class Solution(object):
-    def countAndSay(self, n):
-        """
-        :type n: int
-        :rtype: str
-        """
-        if n <= 0:
-            return ''
-        if n == 1:
-            return '1'
-        seq = self.countAndSay(n - 1)
-        next_seq = ''
-        cnt = 1
-        for i in range(len(seq)):
-            if i + 1 < len(seq) and seq[i] == seq[i + 1]:
-                cnt += 1
-            else:
-                next_seq += str(cnt)
-                next_seq += seq[i]
-                cnt = 1
-
-        return next_seq
-```
-
-### C++
-
-``` c++
-class Solution {
-public:
-    string countAndSay(int n) {
-        if (n <= 0) return "";
-        if (n == 1) return "1";
-
-        string seq = countAndSay(n - 1);
-        string next_seq = "";
-        int cnt = 1;
-        for (int i = 0; i < seq.length(); i++) {
-            if (i + 1 < seq.length() && seq[i] == seq[i + 1]) {
-                cnt++;
-            } else {
-                next_seq.push_back('0' + cnt);
-                next_seq.push_back(seq[i]);
-                cnt = 1;
-            }
-        }
-
-        return next_seq;
-    }
-};
-```
 
 ### Java
 
@@ -236,6 +98,8 @@ public class Solution {
 ### 复杂度分析
 
 略，与选用的数据结构有关。
+
+{% codesnippet "./code/count-and-say."+book.suffix, language=book.suffix %}{% endcodesnippet %}
 
 ## Reference
 

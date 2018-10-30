@@ -20,68 +20,6 @@ Given `1->1->2->3->3`, return `1->2->3`.
 
 遍历之，遇到当前节点和下一节点的值相同时，删除下一节点，并将当前节点`next`值指向下一个节点的`next`, 当前节点首先保持不变，直到相邻节点的值不等时才移动到下一节点。
 
-### Python
-
-```python
-"""
-Definition of ListNode
-class ListNode(object):
-    def __init__(self, val, next=None):
-        self.val = val
-        self.next = next
-"""
-class Solution:
-    """
-    @param head: A ListNode
-    @return: A ListNode
-    """
-    def deleteDuplicates(self, head):
-        curt = head
-        while curt:
-            while curt.next and curt.next.val == curt.val:
-                curt.next = curt.next.next
-            curt = curt.next
-        return head
-```
-
-### C++
-
-```c++
-/**
- * Definition of ListNode
- * class ListNode {
- * public:
- *     int val;
- *     ListNode *next;
- *     ListNode(int val) {
- *         this->val = val;
- *         this->next = NULL;
- *     }
- * }
- */
-class Solution {
-public:
-    /**
-     * @param head: The first node of linked list.
-     * @return: head node
-     */
-    ListNode *deleteDuplicates(ListNode *head) {
-        ListNode *curr = head;
-        while (curr != NULL) {
-            while (curr->next != NULL && curr->val == curr->next->val) {
-                ListNode *temp = curr->next;
-                curr->next = curr->next->next;
-                delete(temp);
-                temp = NULL;
-            }
-            curr = curr->next;
-        }
-
-        return head;
-    }
-};
-```
-
 ### Java
 
 ```java
@@ -126,6 +64,16 @@ public class Solution {
 ### 复杂度分析
 
 遍历链表一次，时间复杂度为 $$O(n)$$, 使用了一个中间变量进行遍历，空间复杂度为 $$O(1)$$.
+
+### 递归版
+
+{% codesnippet "./code/remove-duplicates-from-sorted-list-1."+book.suffix, language=book.suffix %}{% endcodesnippet %}
+
+
+### 迭代版
+
+{% codesnippet "./code/remove-duplicates-from-sorted-list-2."+book.suffix, language=book.suffix %}{% endcodesnippet %}
+
 
 ## Reference
 

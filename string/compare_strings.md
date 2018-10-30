@@ -29,57 +29,6 @@ For `A = "ABCD"`, `B = "AABC"`, return `false`.
 
 既然不是类似 strstr 那样的匹配，直接使用两重循环就不太合适了。题目中另外给的条件则是A和B都是全大写单词，理解题意后容易想到的方案就是先遍历 A 和 B 统计各字符出现的频次，然后比较频次大小即可。嗯，祭出万能的哈希表。
 
-### Python
-
-```python
-class Solution:
-    """
-    @param A : A string includes Upper Case letters
-    @param B : A string includes Upper Case letters
-    @return :  if string A contains all of the characters in B return True else return False
-    """
-    def compareStrings(self, A, B):
-        letters = collections.defaultdict(int)
-        for a in A:
-            letters[a] += 1
-
-        for b in B:
-            letters[b] -= 1
-            if b not in letters or letters[b] < 0:
-                return False
-
-        return True
-```
-
-### C++
-
-```c++
-class Solution {
-public:
-    /**
-     * @param A: A string includes Upper Case letters
-     * @param B: A string includes Upper Case letter
-     * @return:  if string A contains all of the characters in B return true 
-     *           else return false
-     */
-    bool compareStrings(string A, string B) {
-        if (A.size() < B.size()) return false;
-
-        const int UPPER_NUM = 26;
-        int letter_cnt[UPPER_NUM] = {0};
-
-        for (int i = 0; i != A.size(); ++i) {
-            ++letter_cnt[A[i] - 'A'];
-        }
-        for (int i = 0; i != B.size(); ++i) {
-            --letter_cnt[B[i] - 'A'];
-            if (letter_cnt[B[i] - 'A'] < 0) return false;
-        }
-
-        return true;
-    }
-};
-```
 
 ### Java
 

@@ -25,7 +25,7 @@ Can you solve it without using extra space?
 
 从以上两个容易得到的特性可知，在仅仅知道第一次相遇时的节点还不够，相遇后如果不改变既有策略则必然找不到环的入口。接下来我们分析下如何从第一次相遇的节点走到环的入口节点。还是让我们先从实际例子出发，以下图为例。
 
-![Linked List Cycle II](../../shared-files/images/linked_list_cycle_ii.png)
+![Linked List Cycle II](../images/linked_list_cycle_ii.png)
 
 `slow`和`fast`节点分别初始化为节点`1`和`2`，假设快慢指针第一次相遇的节点为`0`, 对应于环中的第`i`个节点 $$C_i$$, 那么此时慢指针正好走了 $$n - r - 1 + i$$ 步，快指针则走了 $$2 \cdot (n - r - 1 + i)$$ 步，且存在[^1]: $$n - r - 1 + i + 1= l \cdot r$$. (之所以在`i`后面加1是因为快指针初始化时多走了一步) 快慢指针第一次相遇时慢指针肯定没有走完整个环，且慢指针走的步数即为整数个环节点个数，由性质1和性质2可联合推出。
 
@@ -34,52 +34,6 @@ Can you solve it without using extra space?
 > **Note** 由于此题快指针初始化为头节点的下一个节点，故分析起来稍微麻烦些，且在第一次相遇后需要让慢指针先走一步，否则会出现死循环。
 
 对于该题来说，快慢指针都初始化为头节点会方便很多，故以下代码使用头节点对快慢指针进行初始化。
-
-### C++
-
-```c++
-/**
- * Definition of ListNode
- * class ListNode {
- * public:
- *     int val;
- *     ListNode *next;
- *     ListNode(int val) {
- *         this->val = val;
- *         this->next = NULL;
- *     }
- * }
- */
-class Solution {
-public:
-    /**
-     * @param head: The first node of linked list.
-     * @return: The node where the cycle begins.
-     *           if there is no cycle, return null
-     */
-    ListNode *detectCycle(ListNode *head) {
-        if (NULL == head || NULL == head->next) {
-            return NULL;
-        }
-
-        ListNode *slow = head, *fast = head;
-        while (NULL != fast && NULL != fast->next) {
-            fast = fast->next->next;
-            slow = slow->next;
-            if (slow == fast) {
-                fast = head;
-                while (slow != fast) {
-                    fast = fast->next;
-                    slow = slow->next;
-                }
-                return slow;
-            }
-        }
-
-        return NULL;
-    }
-};
-```
 
 ###Java
 ```java
@@ -128,6 +82,29 @@ public class Solution {
 ### 复杂度分析
 
 第一次相遇的最坏时间复杂度为 $$O(n)$$, 第二次相遇的最坏时间复杂度为 $$O(n)$$. 故总的时间复杂度近似为 $$O(n)$$, 空间复杂度 $$O(1)$$.
+
+
+
+### 分析
+
+当fast与slow相遇时，slow肯定没有遍历完链表，而fast已经在环内循环了`n`圈($$1 \leq n$$)。假设slow走了`s`步，则fast走了`2s`步（fast步数还等于`s`加上在环上多转的`n`圈），设环长为`r`，则：
+
+`2s = s + nr`
+
+`s = nr`
+
+设整个链表长`L`，环入口点与相遇点距离为`a`，起点到环入口点的距离为`x`，则
+
+`x + a = nr = (n – 1)r +r = (n-1)r + L - x`
+
+`x = (n-1)r + (L – x – a)`
+
+`L – x – a`为相遇点到环入口点的距离，由此可知，从链表头到环入口点等于`n-1`圈内环+相遇点到环入口点，于是我们可以从`head`开始另设一个指针`slow2`，两个慢指针每次前进一步，它俩一定会在环入口点相遇。
+
+
+### 代码
+
+{% codesnippet "./code/linked-list-cycle-ii."+book.suffix, language=book.suffix %}{% endcodesnippet %}
 
 ## Reference
 

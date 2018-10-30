@@ -21,7 +21,7 @@
 
 其中步骤1是给步骤2和3用的。
 
-![Heapsort-example](../../shared-files/images/Heapsort-example.gif)
+![Heapsort-example](../images/Heapsort-example.gif)
 
 ## 堆实现
 

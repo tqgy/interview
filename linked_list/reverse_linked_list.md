@@ -28,68 +28,13 @@ head = temp;
 
 要点在于维护两个指针变量`prev`和`head`, 翻转相邻两个节点之前保存下一节点的值，分析如下图所示：
 
-![Reverse Linked List](../../shared-files/images/reverse_linked_list_i.jpg)
+![Reverse Linked List](../images/reverse_linked_list_i.jpg)
 
 1. 保存head下一节点
 2. 将head所指向的下一节点改为prev
 3. 将prev替换为head，波浪式前进
 4. 将第一步保存的下一节点替换为head，用于下一次循环
 
-### Python
-
-```python
-# Definition for singly-linked list.
-# class ListNode:
-#     def __init__(self, x):
-#         self.val = x
-#         self.next = None
-
-class Solution:
-    # @param {ListNode} head
-    # @return {ListNode}
-    def reverseList(self, head):
-        prev = None
-        curr = head
-        while curr is not None:
-            temp = curr.next
-            curr.next = prev
-            prev = curr
-            curr = temp
-        # fix head
-        head = prev
-
-        return head
-```
-
-### C++
-
-```c++
-/**
- * Definition for singly-linked list.
- * struct ListNode {
- *     int val;
- *     ListNode *next;
- *     ListNode(int x) : val(x), next(NULL) {}
- * };
- */
-class Solution {
-public:
-    ListNode* reverse(ListNode* head) {
-        ListNode *prev = NULL;
-        ListNode *curr = head;
-        while (curr != NULL) {
-            ListNode *temp = curr->next;
-            curr->next = prev;
-            prev = curr;
-            curr = temp;
-        }
-        // fix head
-        head = prev;
-
-        return head;
-    }
-};
-```
 
 ### Java
 
@@ -138,81 +83,6 @@ public class Solution {
 
 由尾部向首部逆推时大致步骤为先翻转当前节点和下一节点，然后将当前节点指向的下一节点置空(否则会出现死循环和新生成的链表尾节点不指向空)，如此递归到头节点为止。新链表的头节点在整个递归过程中一直没有变化，逐层向上返回。
 
-### Python
-
-```python
-"""
-Definition of ListNode
-
-class ListNode(object):
-
-    def __init__(self, val, next=None):
-        self.val = val
-        self.next = next
-"""
-class Solution:
-    """
-    @param head: The first node of the linked list.
-    @return: You should return the head of the reversed linked list.
-                  Reverse it in-place.
-    """
-    def reverse(self, head):
-        # case1: empty list
-        if head is None:
-            return head
-        # case2: only one element list
-        if head.next is None:
-            return head
-        # case3: reverse from the rest after head
-        newHead = self.reverse(head.next)
-        # reverse between head and head->next
-        head.next.next = head
-        # unlink list from the rest
-        head.next = None
-
-        return newHead
-```
-
-### C++
-
-```c++
-/**
- * Definition of ListNode
- *
- * class ListNode {
- * public:
- *     int val;
- *     ListNode *next;
- *
- *     ListNode(int val) {
- *         this->val = val;
- *         this->next = NULL;
- *     }
- * }
- */
-class Solution {
-public:
-    /**
-     * @param head: The first node of linked list.
-     * @return: The new head of reversed linked list.
-     */
-    ListNode *reverse(ListNode *head) {
-        // case1: empty list
-        if (head == NULL) return head;
-        // case2: only one element list
-        if (head->next == NULL) return head;
-        // case3: reverse from the rest after head
-        ListNode *newHead = reverse(head->next);
-        // reverse between head and head->next
-        head->next->next = head;
-        // unlink list from the rest
-        head->next = NULL;
-
-        return newHead;
-    }
-};
-```
-
 ### Java
 
 ```java
@@ -249,6 +119,19 @@ case1 和 case2 可以合在一起考虑，case3 返回的为新链表的头节�
 ### 复杂度分析
 
 递归嵌套层数为 $$O(n)$$, 时间复杂度为 $$O(n)$$, 空间(不含栈空间)复杂度为 $$O(1)$$.
+
+### 分析
+
+用三个指针 `tail`,`p`,`q`，紧紧相邻，不断前进，每次将`p.next`指向`tail`，将`q.next`指向`p`。
+
+
+### 解法1 迭代
+
+{% codesnippet "./code/reverse-linked-list-1."+book.suffix, language=book.suffix %}{% endcodesnippet %}
+
+### 解法2 递归
+
+{% codesnippet "./code/reverse-linked-list-2."+book.suffix, language=book.suffix %}{% endcodesnippet %}
 
 ## Reference
 

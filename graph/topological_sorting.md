@@ -41,7 +41,7 @@ You can assume that there is at least one topological order in the graph.
 
 For graph as follow: 
 
-![picture](../../shared-files/images/topological-sorting.jpeg)
+![picture](../images/topological-sorting.jpeg)
 
 
 The topological order can be:

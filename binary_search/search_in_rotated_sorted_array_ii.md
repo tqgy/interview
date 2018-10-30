@@ -18,58 +18,6 @@ Write a function to determine if a given target is in the array.
 
 仔细分析此题和之前一题的不同之处，前一题我们利用`A[start] < A[mid]`这一关键信息，而在此题中由于有重复元素的存在，在`A[start] == A[mid]`时无法确定有序数组，此时只能依次递增start/递减end以缩小搜索范围，时间复杂度最差变为O(n)。
 
-### C++
-
-```c++
-class Solution {
-    /**
-     * param A : an integer ratated sorted array and duplicates are allowed
-     * param target :  an integer to be search
-     * return : a boolean
-     */
-public:
-    bool search(vector<int> &A, int target) {
-        if (A.empty()) {
-            return false;
-        }
-
-        vector<int>::size_type start = 0;
-        vector<int>::size_type end = A.size() - 1;
-        vector<int>::size_type mid;
-
-        while (start + 1 < end) {
-            mid = start + (end - start) / 2;
-            if (target == A[mid]) {
-                return true;
-            }
-            if (A[start] < A[mid]) {
-                // situation 1, numbers between start and mid are sorted
-                if (A[start] <= target && target < A[mid]) {
-                    end = mid;
-                } else {
-                    start = mid;
-                }
-            } else if (A[start] > A[mid]) {
-                // situation 2, numbers between mid and end are sorted
-                if (A[mid] < target && target <= A[end]) {
-                    start = mid;
-                } else {
-                    end = mid;
-                }
-            } else  {
-                // increment start
-                ++start;
-            }
-        }
-
-        if (A[start] == target || A[end] == target) {
-            return true;
-        }
-        return false;
-    }
-};
-```
-
 ### Java
 
 ```java
@@ -122,3 +70,45 @@ public class Solution {
 ### 复杂度分析
 
 最差情况下 $$O(n)$$, 平均情况下 $$O(\log n)$$.
+
+
+### 分析
+
+允许重复元素，则上一题中如果`A[left] <= A[mid]`,那么`[left,mid]`为递增序列的假设就不能成立了，比如`[1,3,1,1,1]`。
+
+既然`A[left] <= A[mid]`不能确定递增，那就把它拆分成两个条件：
+
+* 若`A[left] < A[mid]`，则区间`[left,mid]`一定递增
+* 若`A[left] == A[mid]` 确定不了，那就`left++`，往下看一步即可。
+
+
+### 代码
+
+```java
+// Search in Rotated Sorted Array II
+// Time Complexity: O(n)，Space Complexity: O(1)
+public class Solution {
+    public boolean search(int[] nums, int target) {
+        int first = 0, last = nums.length;
+        while (first != last) {
+            final int mid = first  + (last - first) / 2;
+            if (nums[mid] == target)
+                return true;
+            if (nums[first] < nums[mid]) {
+                if (nums[first] <= target && target < nums[mid])
+                    last = mid;
+                else
+                    first = mid + 1;
+            } else if (nums[first] > nums[mid]) {
+                if (nums[mid] < target && target <= nums[last-1])
+                    first = mid + 1;
+                else
+                    last = mid;
+            } else
+                //skip duplicate one
+                first++;
+        }
+        return false;
+    }
+};
+```

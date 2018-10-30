@@ -7,7 +7,7 @@ Determine if a Sudoku is valid, according to: Sudoku Puzzles - The Rules <http:/
 
 The Sudoku board could be partially filled, where empty cells are filled with the character `'.'`.
 
-![Valid Sudoku](../../images/sudoku.png)
+![Valid Sudoku](../images/sudoku.png)
 
 
 ### 分析

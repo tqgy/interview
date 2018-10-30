@@ -47,65 +47,9 @@ O(logN) time
 
 对于旋转数组的分析可使用画图的方法，如下图所示，升序数组经旋转后可能为如下两种形式。
 
-![Rotated Array](../../shared-files/images/rotated_array.png)
+![Rotated Array](../images/rotated_array.png)
 
 对于有序数组，使用二分搜索比较方便。分析题中的数组特点，旋转后初看是乱序数组，但仔细一看其实里面是存在两段有序数组的。刚开始做这道题时可能会去比较`target`和`A[mid]`, 但分析起来异常复杂。**该题较为巧妙的地方在于如何找出旋转数组中的局部有序数组，并使用二分搜索解之。**结合实际数组在纸上分析较为方便。
-
-### C++
-
-```c++
-/**
- * 本代码fork自
- * http://www.jiuzhang.com/solutions/search-in-rotated-sorted-array/
- */
-class Solution {
-    /**
-     * param A : an integer ratated sorted array
-     * param target :  an integer to be searched
-     * return : an integer
-     */
-public:
-    int search(vector<int> &A, int target) {
-        if (A.empty()) {
-            return -1;
-        }
-
-        vector<int>::size_type start = 0;
-        vector<int>::size_type end = A.size() - 1;
-        vector<int>::size_type mid;
-
-        while (start + 1 < end) {
-            mid = start + (end - start) / 2;
-            if (target == A[mid]) {
-                return mid;
-            }
-            if (A[start] < A[mid]) {
-                // situation 1, numbers between start and mid are sorted
-                if (A[start] <= target && target < A[mid]) {
-                    end = mid;
-                } else {
-                    start = mid;
-                }
-            } else {
-                // situation 2, numbers between mid and end are sorted
-                if (A[mid] < target && target <= A[end]) {
-                    start = mid;
-                } else {
-                    end = mid;
-                }
-            }
-        }
-
-        if (A[start] == target) {
-            return start;
-        }
-        if (A[end] == target) {
-            return end;
-        }
-        return -1;
-    }
-};
-```
 
 ### Java
 
@@ -240,3 +184,63 @@ public class Solution {
 ### 复杂度分析
 
 第一次二分找段点时间复杂度为 ***O(log n)*** , 第二次在局部有序数组上二分时间复杂度不超过 ***O(log n)*** , 总起来还是近似 ***O(log n)*** .
+
+### 分析
+
+一个有序数组被循环右移，只可能有一下两种情况：
+
+```
+   7 │
+ 6   │
+─────┼───────────
+     │         5
+     │       4
+     │     3
+     │   2
+     │ 1
+```
+
+```
+         7 │
+       6   │
+     5     │
+   4       │
+ 3         │
+───────────┼───────────      
+           │   2
+           │ 1
+```
+
+本题依旧可以用二分查找，难度主要在于左右边界的确定。仔细观察上面两幅图，我们可以得出如下结论：
+
+如果`A[left] <= A[mid]`,那么`[left,mid]` 一定为单调递增序列。
+
+
+### 代码
+
+```java
+// Search in Rotated Sorted Array
+// Time Complexity: O(log n)，Space Complexity: O(1)
+public class Solution {
+    public int search(int[] nums, int target) {
+        int first = 0, last = nums.length;
+        while (first != last) {
+            final int mid = first  + (last - first) / 2;
+            if (nums[mid] == target)
+                return mid;
+            if (nums[first] <= nums[mid]) {
+                if (nums[first] <= target && target < nums[mid])
+                    last = mid;
+                else
+                    first = mid + 1;
+            } else {
+                if (nums[mid] < target && target <= nums[last-1])
+                    first = mid + 1;
+                else
+                    last = mid;
+            }
+        }
+        return -1;
+    }
+};
+```

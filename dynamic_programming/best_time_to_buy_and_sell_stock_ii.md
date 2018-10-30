@@ -25,50 +25,6 @@ Given an example [2,1,2,0,1], return 2
 
 好了，思路知道了——计算所有连续波谷波峰的差值之和。需要遍历求得所有波谷波峰的值吗？我最开始还真是这么想的，看了 soulmachine 的题解才发现原来可以把数组看成时间序列，只需要计算相邻序列的差值即可，只累加大于0的差值。
 
-### Python
-
-```python
-class Solution:
-    """
-    @param prices: Given an integer array
-    @return: Maximum profit
-    """
-    def maxProfit(self, prices):
-        if prices is None or len(prices) <= 1:
-            return 0
-
-        profit = 0
-        for i in xrange(1, len(prices)):
-            diff = prices[i] - prices[i - 1]
-            if diff > 0:
-                profit += diff
-
-        return profit
-```
-
-### C++
-
-```c++
-class Solution {
-public:
-    /**
-     * @param prices: Given an integer array
-     * @return: Maximum profit
-     */
-    int maxProfit(vector<int> &prices) {
-        if (prices.size() <= 1) return 0;
-
-        int profit = 0;
-        for (int i = 1; i < prices.size(); ++i) {
-            int diff = prices[i] - prices[i - 1];
-            if (diff > 0) profit += diff;
-        }
-
-        return profit;
-    }
-};
-```
-
 ### Java
 
 ```java

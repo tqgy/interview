@@ -18,76 +18,6 @@ Given 1->3->2->0->null, return 0->1->2->3->null.
 
 由于排序后头节点不一定，故需要引入 dummy 大法，并以此节点的`next`作为最后返回结果的头节点，返回的链表从`dummy->next`这里开始构建。首先我们每次都从`dummy->next`开始遍历，依次和上一轮处理到的节点的值进行比较，直至找到不小于上一轮节点值的节点为止，随后将上一轮节点插入到当前遍历的节点之前，依此类推。文字描述起来可能比较模糊，大家可以结合以下的代码在纸上分析下。
 
-### Python
-
-```python
-"""
-Definition of ListNode
-class ListNode(object):
-
-    def __init__(self, val, next=None):
-        self.val = val
-        self.next = next
-"""
-class Solution:
-    """
-    @param head: The first node of linked list.
-    @return: The head of linked list.
-    """
-    def insertionSortList(self, head):
-        dummy = ListNode(0)
-        cur = head
-        while cur is not None:
-            pre = dummy
-            while pre.next is not None and pre.next.val < cur.val:
-                pre = pre.next
-            temp = cur.next
-            cur.next = pre.next
-            pre.next = cur
-            cur = temp
-        return dummy.next
-```
-
-### C++
-
-```c++
-/**
- * Definition of ListNode
- * class ListNode {
- * public:
- *     int val;
- *     ListNode *next;
- *     ListNode(int val) {
- *         this->val = val;
- *         this->next = NULL;
- *     }
- * }
- */
-class Solution {
-public:
-    /**
-     * @param head: The first node of linked list.
-     * @return: The head of linked list.
-     */
-    ListNode *insertionSortList(ListNode *head) {
-        ListNode *dummy = new ListNode(0);
-	ListNode *cur = head;
-        while (cur != NULL) {
-            ListNode *pre = dummy;
-            while (pre->next != NULL && pre->next->val < cur->val) {
-                pre = pre->next;
-            }
-            ListNode *temp = cur->next;
-            cur->next = pre->next;
-            pre->next = cur;
-            cur = temp;
-        }
-
-        return dummy->next;
-    }
-};
-```
-
 ### Java
 
 ```java
@@ -138,89 +68,6 @@ Python 的实现在 lintcode 上会提示 TLE, leetcode 上勉强通过，这里
 
 从题解1的复杂度分析可以看出其在最好情况下时间复杂度都为 $$O(n^2)$$ ，这显然是需要优化的。 仔细观察可发现最好情况下的比较次数 是可以优化到 $$O(n)$$ 的。思路自然就是先判断链表是否有序，仅对降序的部分进行处理。优化之后的代码就没题解1那么容易写对了，建议画个图自行纸上分析下。
 
-### Python
-
-```python
-"""
-Definition of ListNode
-class ListNode(object):
-
-    def __init__(self, val, next=None):
-        self.val = val
-        self.next = next
-"""
-class Solution:
-    """
-    @param head: The first node of linked list.
-    @return: The head of linked list.
-    """
-    def insertionSortList(self, head):
-        dummy = ListNode(0)
-        dummy.next = head
-        cur = head
-        while cur is not None:
-            if cur.next is not None and cur.next.val < cur.val:
-                # find insert position for smaller(cur->next)
-                pre = dummy
-                while pre.next is not None and pre.next.val < cur.next.val:
-                    pre = pre.next
-                # insert cur->next after pre
-                temp = pre.next
-                pre.next = cur.next
-                cur.next = cur.next.next
-                pre.next.next = temp
-            else:
-                cur = cur.next
-        return dummy.next
-```
-
-### C++
-
-```c++
-/**
- * Definition of ListNode
- * class ListNode {
- * public:
- *     int val;
- *     ListNode *next;
- *     ListNode(int val) {
- *         this->val = val;
- *         this->next = NULL;
- *     }
- * }
- */
-class Solution {
-public:
-    /**
-     * @param head: The first node of linked list.
-     * @return: The head of linked list.
-     */
-    ListNode *insertionSortList(ListNode *head) {
-        ListNode *dummy = new ListNode(0);
-        dummy->next = head;
-	ListNode *cur = head;
-        while (cur != NULL) {
-            if (cur->next != NULL && cur->next->val < cur->val) {
-                ListNode *pre = dummy;
-                // find insert position for smaller(cur->next)
-                while (pre->next != NULL && pre->next->val <= cur->next->val) {
-                    pre = pre->next;
-                }
-                // insert cur->next after pre
-                ListNode *temp = pre->next;
-                pre->next = cur->next;
-                cur->next = cur->next->next;
-                pre->next->next = temp;
-            } else {
-                cur = cur->next;
-            }
-        }
-
-        return dummy->next;
-    }
-};
-```
-
 ### Java
 
 ```java
@@ -266,7 +113,7 @@ public class Solution {
 3. 由于已经确认链表逆序，故仅需将较小值(`cur->next`而不是`cur`)的节点插入到链表的合适位置。
 4. 将`cur->next`插入到`pre`之后，这里需要四个步骤，需要特别小心！
 
-![Insertion Sort](../../shared-files/images/insertion_sort_list.png)
+![Insertion Sort](../images/insertion_sort_list.png)
 
 如上图所示，将`cur->next`插入到`pre`节点后大致分为3个步骤。
 

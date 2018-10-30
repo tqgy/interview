@@ -90,79 +90,11 @@ public:
 1. 节点dummy的初始化有问题，对类的初始化应该使用`new`
 2. 在else语句中`node->next = node->next->next;`改写了`dummy-next`中的内容，返回的`dummy-next`不再是队首元素，而是队尾元素。原因很微妙，应该使用`node = node->next;`，node代表节点指针变量，而node->next代表当前节点所指向的下一节点地址。具体分析可自行在纸上画图分析，可对指针和链表的理解又加深不少。
 
-![remove_duplicates_from_sorted_listd内存分析](../../shared-files/images/remove_duplicates_from_sorted_list.jpg)
+![remove_duplicates_from_sorted_listd内存分析](../images/remove_duplicates_from_sorted_list.jpg)
 
 图中上半部分为ListNode的内存示意图，每个框底下为其内存地址。`dummy`指针变量本身的地址为ox7fff5d0d2500，其保存着指针变量值为0x7fbe7bc04c50. `head`指针变量本身的地址为ox7fff5d0d2508，其保存着指针变量值为0x7fbe7bc04c00.
 
 好了，接下来看看正确实现及解析。
-
-### Python
-
-```python
-# Definition for singly-linked list.
-# class ListNode:
-#     def __init__(self, x):
-#         self.val = x
-#         self.next = None
-
-class Solution:
-    # @param {ListNode} head
-    # @return {ListNode}
-    def deleteDuplicates(self, head):
-        if head is None:
-            return None
-
-        dummy = ListNode(0)
-        dummy.next = head
-        node = dummy
-        while node.next is not None and node.next.next is not None:
-            if node.next.val == node.next.next.val:
-                val_prev = node.next.val
-                while node.next is not None and node.next.val == val_prev:
-                    node.next = node.next.next
-            else:
-                node = node.next
-
-        return dummy.next
-```
-
-### C++
-
-```c++
-/**
- * Definition for singly-linked list.
- * struct ListNode {
- *     int val;
- *     ListNode *next;
- *     ListNode(int x) : val(x), next(NULL) {}
- * };
- */
-class Solution {
-public:
-    ListNode* deleteDuplicates(ListNode* head) {
-        if (head == NULL) return NULL;
-        
-        ListNode dummy(0);
-        dummy.next = head;
-        ListNode *node = &dummy;
-        while (node->next != NULL && node->next->next != NULL) {
-            if (node->next->val == node->next->next->val) {
-                int val_prev = node->next->val;
-                // remove ListNode node->next
-                while (node->next != NULL && val_prev == node->next->val) {
-                    ListNode *temp = node->next;
-                    node->next = node->next->next;
-                    delete temp;
-                }
-            } else {
-                node = node->next;
-            }
-        }
-        
-        return dummy.next;
-    }
-};
-```
 
 ### Java
 
@@ -211,6 +143,17 @@ Python 中也可不使用`is not None`判断，但是效率会低一点。
 ### 复杂度分析
 
 两根指针(node.next 和 node.next.next)遍历，时间复杂度为 $$O(2n)$$. 使用了一个 dummy 和中间缓存变量，空间复杂度近似为 $$O(1)$$.
+
+
+### 递归版
+
+{% codesnippet "./code/remove-duplicates-from-sorted-list-ii-1."+book.suffix, language=book.suffix %}{% endcodesnippet %}
+
+
+### 迭代版
+
+{% codesnippet "./code/remove-duplicates-from-sorted-list-ii-2."+book.suffix, language=book.suffix %}{% endcodesnippet %}
+
 
 ## Reference
 

@@ -11,7 +11,7 @@ Maximum Depth of Binary Tree# Binary Tree - 二叉树
 
 下图是把本章中所有出现的题目归类总结了一下，便于记忆
 
-![二叉树](../shared-files/images/binary_tree_summary.png)
+![二叉树](../images/binary_tree_summary.png)
 
 {% if book.java %}
 ```java

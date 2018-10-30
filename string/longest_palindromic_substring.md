@@ -34,75 +34,6 @@ assume that the maximum length of **s** is 1000.
 
 最简单的方案，穷举所有可能的子串，判断子串是否为回文，使用一变量记录最大回文长度，若新的回文超过之前的最大回文长度则更新标记变量并记录当前回文的起止索引，最后返回最长回文子串。
 
-### Python
-
-```python
-class Solution:
-    # @param {string} s input string
-    # @return {string} the longest palindromic substring
-    def longestPalindrome(self, s):
-        if not s:
-            return ""
-
-        n = len(s)
-        longest, left, right = 0, 0, 0
-        for i in xrange(0, n):
-            for j in xrange(i + 1, n + 1):
-                substr = s[i:j]
-                if self.isPalindrome(substr) and len(substr) > longest:
-                    longest = len(substr)
-                    left, right = i, j
-        # construct longest substr
-        result = s[left:right]
-        return result
-
-    def isPalindrome(self, s):
-        if not s:
-            return False
-        # reverse compare
-        return s == s[::-1]
-```
-
-### C++
-
-```c++
-class Solution {
-public:
-    /**
-     * @param s input string
-     * @return the longest palindromic substring
-     */
-    string longestPalindrome(string& s) {
-        string result;
-        if (s.empty()) return s;
-
-        int n = s.size();
-        int longest = 0, left = 0, right = 0;
-        for (int i = 0; i < n; ++i) {
-            for (int j = i + 1; j <= n; ++j) {
-                string substr = s.substr(i, j - i);
-                if (isPalindrome(substr) && substr.size() > longest) {
-                    longest = j - i;
-                    left = i;
-                    right = j;
-                }
-            }
-        }
-
-        result = s.substr(left, right - left);
-        return result;
-    }
-
-private:
-    bool isPalindrome(string &s) {
-        int n = s.size();
-        for (int i = 0; i < n; ++i) {
-            if (s[i] != s[n - i - 1]) return false;
-        }
-        return true;
-    }
-};
-```
 
 ### Java
 
@@ -146,30 +77,6 @@ P.S. 目前仅 Java 对回文判断优化过。
 ## 题解2
 
 题解1 中的思路是从子串出发判断回文串进而取最长，可以发现其中有许多重复的计算，如果我们从回文串本身出发进行求解，即从子串中间向左向右判断是否符合要求，由于回文串必定是某一子串，故只需从字符串的某一索引展开，分奇偶长度判断，时间复杂度可降为 $$O(n^2)$$.
-
-### C++
-
-```c++
-string palindrome(string& s, int l, int r) {
-	while (l>=0 && r<s.size() && s[l]==s[r]) l--, r++;
-	return s.substr(l+1, r-l-1);
-}
-
-string longestPalindrome(string s) {
-	if (s.empty()) return s;
-
-	string res;
-	for (int i=0; i<s.size(); i++) {
-		string t;
-		t = palindrome(s, i, i);
-		if (t.size() > res.size()) res = t;
-	   
-		t = palindrome(s, i, i+1);
-		if (t.size() > res.size()) res = t;   
-	}
-	return res;
-}
-```
 
 ### Java
 
@@ -221,6 +128,115 @@ public class Solution {
 
 另外还有一个O（n）的解法，具体参考下面的链接
 http://articles.leetcode.com/2011/11/longest-palindromic-substring-part-ii.html
+
+### 分析
+
+最长回文子串，非常经典的题。
+
+思路一：暴力枚举，以每个元素为中间元素，同时从左右出发，复杂度`O(n^2)`。
+
+思路二：记忆化搜索，复杂度`O(n^2)`。设`f[i][j]` 表示[i,j]之间的最长回文子串，递推方程如下：
+
+```
+f[i][j] = if (i == j) S[i]
+          if (S[i] == S[j] && f[i+1][j-1] == S[i+1][j-1]) S[i][j]
+          else max(f[i+1][j-1], f[i][j-1], f[i+1][j])
+```
+
+思路三：动规，复杂度`O(n^2)`。设状态为`f(i,j)`，表示区间[i,j]是否为回文串，则状态转移方程为
+
+$$
+f(i,j)=\begin{cases}
+true & ,i=j\\
+S[i]=S[j] & , j = i + 1 \\
+S[i]=S[j] \text{ and } f(i+1, j-1) & , j > i + 1
+\end{cases}
+$$
+
+思路四：Manacher’s Algorithm, 复杂度`O(n)`。详细解释见 <http://leetcode.com/2011/11/longest-palindromic-substring-part-ii.html>。
+
+
+### 备忘录法
+
+{% if book.java %}
+```java
+// Longest Palindromic Substring
+// 备忘录法，会超时
+// 时间复杂度O(n^2)，空间复杂度O(n^2)
+public class Solution {
+    private final HashMap<Pair, String> cache = new HashMap<>();
+    
+    public String longestPalindrome(final String s) {
+        cache.clear();
+        return cachedLongestPalindrome(s, 0, s.length() - 1);
+    }
+
+    String longestPalindrome(final String s, int i, int j) {
+        final int length = j - i + 1;
+        if (length < 2) return s.substring(i, j + 1);
+
+        final String s1 = cachedLongestPalindrome(s, i + 1, j - 1);
+
+        if (s1.length() == length - 2 && s.charAt(i + 1) == s.charAt(j - 1))
+            return s.substring(i, j + 1);
+
+        final String s2 = cachedLongestPalindrome(s, i + 1, j);
+        final String s3 = cachedLongestPalindrome(s, i, j - 1);
+
+        // return max(s1, s2, s3)
+        if (s1.length() > s2.length()) return s1.length() > s3.length() ? s1 : s3;
+        else return s2.length() > s3.length() ? s2 : s3;
+    }
+
+    String cachedLongestPalindrome(final String s, int i, int j) {
+        final Pair key = new Pair(i, j);
+        
+        if (cache.containsKey(key)) {
+            return cache.get(key);
+        } else {
+            final String result = longestPalindrome(s, i, j);
+            cache.put(key, result);
+            return result;
+        }
+    }
+    
+    // immutable
+    static class Pair {
+        private int x;
+        private int y;
+
+        public Pair(int x, int y) {
+            this.x = x;
+            this.y = y;
+        }
+
+        @Override
+        public int hashCode() {
+            return x * 31 + y;
+        }
+
+        @Override
+        public boolean equals(Object other) {
+            if (this == other) return true;
+            if (this.hashCode() != other.hashCode()) return false;
+            if (!(other instanceof Pair)) return false;
+
+            final Pair o = (Pair) other;
+            return this.x == o.x && this.y == o.y;
+        }
+    }
+}
+```
+{% endif %}
+
+### 动规
+
+{% codesnippet "./code/longest-palindromic-substring-2."+book.suffix, language=book.suffix %}{% endcodesnippet %}
+
+
+### Manacher’s Algorithm
+
+{% codesnippet "./code/longest-palindromic-substring-3."+book.suffix, language=book.suffix %}{% endcodesnippet %}
 
 ## Reference
 

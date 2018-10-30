@@ -38,64 +38,6 @@ $$\sum _{i = 1} ^{n} \frac {L[i]}{l} \geq k$$
 
 P.S. 关于二分搜索总结在 [Binary Search](http://algorithm.yuanbin.me/zh-hans/basics_algorithm/binary_search.html) 一小节，直接套用『模板二——最优化』即可。
 
-### Python
-
-```python
-class Solution:
-    """
-    @param L: Given n pieces of wood with length L[i]
-    @param k: An integer
-    return: The maximum length of the small pieces.
-    """
-    def woodCut(self, L, k):
-        if sum(L) < k:
-            return 0
-
-        start, end = 1, max(L)
-        while start + 1 < end:
-            mid = (start + end) / 2
-            pieces_sum = sum(len_i / mid for len_i in L)
-            if pieces_sum < k:
-                end = mid
-            else:
-                start = mid
-
-        if sum(len_i / end for len_i in L) >= k:
-            return end
-        return start
-```
-
-### C++
-```c++
-class Solution {
-public:
-    /** 
-     *@param L: Given n pieces of wood with length L[i]
-     *@param k: An integer
-     *return: The maximum length of the small pieces.
-     */
-    int woodCut(vector<int> L, int k) {
-        // write your code here
-        int lb = 0, ub = 0;
-        for (auto l : L) if (l + 1 > ub) ub = l + 1;
-        
-        while (lb + 1 < ub) {
-            int mid = lb + (ub - lb) / 2;
-            if (C(L, k, mid)) lb = mid;
-            else ub = mid;
-        }
-        return lb;
-    }
-    
-    int C(vector<int> L, int k, int mid) {
-        int sum = 0;
-        for (auto l : L) {
-            sum += l / mid;
-        }
-        return sum >= k;
-    }
-};
-```
 
 ### Java
 

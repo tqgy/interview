@@ -26,44 +26,10 @@ You may assume no duplicate exists in the array.
 
 如前节所述，对于旋转数组的分析可使用画图的方法，如下图所示，升序数组经旋转后可能为如下两种形式。
 
-![Rotated Array](../../shared-files/images/rotated_array.png)
+![Rotated Array](../images/rotated_array.png)
 
 最小值可能在上图中的两种位置出现，如果仍然使用数组首部元素作为target去比较，则需要考虑图中右侧情况。**使用逆向思维分析，如果使用数组尾部元素分析，则无需图中右侧的特殊情况。**不过考虑在内的话也算是一种优化。
 
-### C++
-
-```c++
-class Solution {
-public:
-    /**
-     * @param num: a rotated sorted array
-     * @return: the minimum number in the array
-     */
-    int findMin(vector<int> &num) {
-        if (num.empty()) {
-            return -1;
-        }
-
-        vector<int>::size_type start = 0;
-        vector<int>::size_type end = num.size() - 1;
-        vector<int>::size_type mid;
-        while (start + 1 < end) {
-            mid = start + (end - start) / 2;
-            if (num[mid] < num[end]) {
-                end = mid;
-            } else {
-                start = mid;
-            }
-        }
-
-        if (num[start] < num[end]) {
-            return num[start];
-        } else {
-            return num[end];
-        }
-    }
-};
-```
 
 ### Java
 
@@ -102,3 +68,19 @@ public class Solution {
 ### 复杂度分析
 
 由于无重复元素，平均情况下复杂度为 $$O(\log n)$$.
+
+### 分析
+
+从左向右扫描，扫描到的第一个逆序的位置，肯定是原始数组中第一个元素，时间复杂度`O(n)`。
+
+不过本题依旧可以用二分查找，最关键的是要判断那个“断层”是在左边还是右边。
+
+* 若`A[mid] < A[right]`，则区间`[mid,right]`一定递增，断层一定在左边
+* 若`A[mid] > A[right]`，则区间`[left,mid]`一定递增，断层一定在右边
+* `nums[mid] == nums[right]`，这种情况不可能发生，因为数组是严格单调递增的，不存在重复元素
+
+### 代码
+
+{% if book.java %}
+{% codesnippet "./code/find-minimum-in-rotated-sorted-array."+book.suffix, language=book.suffix %}{% endcodesnippet %}
+{% endif %}

@@ -69,6 +69,15 @@ public class Solution {
 
 没啥好分析的，时间和空间复杂度均为 $$O(max(L1, L2))$$.
 
+### 分析
+
+跟 [Add Binary](../string/add-binary.md) 很类似
+
+
+### 代码
+
+{% codesnippet "./code/add-two-numbers."+book.suffix, language=book.suffix %}{% endcodesnippet %}
+
 ## Reference
 
 - *CC150 Chapter 9.2* 题2.5，中文版 p123

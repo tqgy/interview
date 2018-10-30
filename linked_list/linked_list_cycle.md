@@ -22,47 +22,10 @@ Can you solve it without using extra space?
 
 快指针走到`NULL`退出循环即可确定此链表一定无环这个很好理解。那么带环的链表快慢指针一定会相遇吗？先来看看下图。
 
-![Linked List Cycle](../../shared-files/images/linked_list_cycle.png)
+![Linked List Cycle](../images/linked_list_cycle.png)
 
 在有环的情况下，最终快慢指针一定都走在环内，加入第`i`次遍历时快指针还需要`k`步才能追上慢指针，由于快指针比慢指针每次多走一步。那么每遍历一次快慢指针间的间距都会减少1，直至最终相遇。故快慢指针相遇一定能确定该链表有环。
 
-### C++
-
-```c++
-/**
- * Definition of ListNode
- * class ListNode {
- * public:
- *     int val;
- *     ListNode *next;
- *     ListNode(int val) {
- *         this->val = val;
- *         this->next = NULL;
- *     }
- * }
- */
-class Solution {
-public:
-    /**
-     * @param head: The first node of linked list.
-     * @return: True if it has a cycle, or false
-     */
-    bool hasCycle(ListNode *head) {
-        if (NULL == head || NULL == head->next) {
-            return false;
-        }
-
-        ListNode *slow = head, *fast = head->next;
-        while (NULL != fast && NULL != fast->next) {
-            fast = fast->next->next;
-            slow = slow->next;
-            if (slow == fast) return true;
-        }
-
-        return false;
-    }
-};
-```
 
 ### Java
 ```java
@@ -108,6 +71,18 @@ public class Solution {
 2. 有环时，最坏的时间复杂度近似为 $$O(n)$$. 最坏情况下链表的头尾相接，此时快指针恰好在慢指针前一个节点，还需 n 次快慢指针相遇。最好情况和无环相同，尾节点出现环。
 
 故总的时间复杂度可近似为 $$O(n)$$.
+
+### 分析
+
+最容易想到的方法是，用一个哈希表`unordered_map<int, bool> visited`，记录每个元素是否被访问过，一旦出现某个元素被重复访问，说明存在环。空间复杂度`O(n)`，时间复杂度`O(N)`。
+
+最好的方法是时间复杂度`O(n)`，空间复杂度`O(1)`的。设置两个指针，一个快一个慢，快的指针每次走两步，慢的指针每次走一步，如果快指针和慢指针相遇，则说明有环。参考\myurl{ http://leetcode.com/2010/09/detecting-loop-in-singly-linked-list.html}
+
+
+### 代码
+
+{% codesnippet "./code/linked-list-cycle."+book.suffix, language=book.suffix %}{% endcodesnippet %}
+
 
 ## Reference
 

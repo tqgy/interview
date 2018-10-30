@@ -22,82 +22,6 @@ O(log _n_) time.
 
 ## 题解
 
-### Python
-first/last position 结合。
-```python
-class Solution:
-    """
-    @param A : a list of integers
-    @param target : an integer to be searched
-    @return : a list of length 2, [index1, index2]
-    """
-    def searchRange(self, A, target):
-        ret = [-1, -1]
-        if not A:
-            return ret
-
-        # find the first position of target
-        st, ed = 0, len(A) - 1
-        while st + 1 < ed:
-            mid = (st + ed) / 2
-            if A[mid] == target:
-                ed = mid
-            elif A[mid] < target:
-                st = mid
-            else:
-                ed = mid
-        if A[st] == target:
-            ret[0] = st
-        elif A[ed] == target:
-            ret[0] = ed
-        # find the last position of target
-        st, ed = 0, len(A) - 1
-        while st + 1 < ed:
-            mid = (st + ed) / 2
-            if A[mid] == target:
-                st = mid
-            elif A[mid] < target:
-                st = mid
-            else:
-                ed = mid
-        if A[ed] == target:
-            ret[1] = ed
-        elif A[st] == target:
-            ret[1] = st
-
-        return ret
-```
-
-### C++
-```c++
-class Solution {
-public:
-    vector<int> searchRange(vector<int>& nums, int target) {
-        vector<int> result = {-1, -1};
-        if (nums.empty()) return result;
-
-        int lb = -1, ub = nums.size();
-        while (lb + 1 < ub) {
-            int mid = lb + (ub - lb) / 2;
-            if (nums[mid] < target) lb = mid;
-            else ub = mid;
-        }
-
-        if ((ub < nums.size()) && (nums[ub] == target)) result[0] = ub;
-        else return result;
-
-        ub = nums.size();
-        while (lb + 1 < ub) {
-            int mid = lb + (ub - lb) / 2;
-            if (nums[mid] > target) ub = mid;
-            else lb = mid;
-        }
-        result[1] = ub - 1;
-        return result;
-    }
-};
-```
-
 ### Java
 lower/upper bound 的结合，做两次搜索即可。
 ```java
@@ -158,6 +82,17 @@ public class Solution {
 ### 复杂度分析
 
 两次二分搜索，时间复杂度仍为 $$O(\log n)$$.
+
+### 分析
+
+已经排好了序，用二分查找。
+
+
+### 重新实现 lower_bound 和 upper_bound
+
+{% if book.java %}
+{% codesnippet "./code/search-for-a-range."+book.suffix, language=book.suffix %}{% endcodesnippet %}
+{% endif %}
 
 ## Reference
 

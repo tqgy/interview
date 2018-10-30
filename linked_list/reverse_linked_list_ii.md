@@ -31,68 +31,6 @@ Reverse it in-place and in one-pass
 3. 处理第m-1个和第n+1个节点
 4. 返回dummy->next
 
-### C++
-
-```c++
-/**
- * Definition of singly-linked-list:
- *
- * class ListNode {
- * public:
- *     int val;
- *     ListNode *next;
- *     ListNode(int val) {
- *        this->val = val;
- *        this->next = NULL;
- *     }
- * }
- */
-class Solution {
-public:
-    /**
-     * @param head: The head of linked list.
-     * @param m: The start position need to reverse.
-     * @param n: The end position need to reverse.
-     * @return: The new head of partial reversed linked list.
-     */
-    ListNode *reverseBetween(ListNode *head, int m, int n) {
-        if (head == NULL || m > n) {
-            return NULL;
-        }
-
-        ListNode *dummy = new ListNode(0);
-        dummy->next = head;
-        ListNode *node = dummy;
-
-        for (int i = 1; i != m; ++i) {
-            if (node == NULL) {
-                return NULL;
-            } else {
-                node = node->next;
-            }
-        }
-
-        ListNode *premNode = node;
-        ListNode *mNode = node->next;
-        ListNode *nNode = mNode, *postnNode = nNode->next;
-        for (int i = m; i != n; ++i) {
-            if (postnNode == NULL) {
-                return NULL;
-            }
-
-            ListNode *temp = postnNode->next;
-            postnNode->next = nNode;
-            nNode = postnNode;
-            postnNode = temp;
-        }
-        premNode->next = nNode;
-        mNode->next = postnNode;
-
-        return dummy->next;
-    }
-};
-```
-
 ### Java
 
 ```java
@@ -152,3 +90,13 @@ public class Solution {
 6. 连接mNode和postnNode，`mNode->next = postnNode;`
 
 **务必注意node 和node->next的区别！！**，node指代节点，而`node->next`指代节点的下一连接。
+
+
+### 分析
+
+这题非常繁琐，有很多边界检查，15分钟内做到bug free很有难度！
+
+
+### 代码
+
+{% codesnippet "./code/reverse-linked-list-ii."+book.suffix, language=book.suffix %}{% endcodesnippet %}

@@ -37,59 +37,6 @@ this problem and creating all test cases.
 
 备注：如果本题是找 first/last peak，就不能用二分法了。
 
-### Python
-
-```python
-class Solution:
-    #@param A: An integers list.
-    #@return: return any of peek positions.
-    def findPeak(self, A):
-        if not A:
-            return -1
-
-        l, r = 0, len(A) - 1
-        while l + 1 < r:
-            mid = l + (r - l) / 2
-            if A[mid] < A[mid - 1]:
-                r = mid
-            elif A[mid] < A[mid + 1]:
-                l = mid
-            else:
-                return mid
-        mid = l if A[l] > A[r] else r
-        return mid
-```
-
-### C++
-
-```c++
-class Solution {
-public:
-    /**
-     * @param A: An integers array.
-     * @return: return any of peek positions.
-     */
-    int findPeak(vector<int> A) {
-        if (A.size() == 0) return -1;
-
-        int l = 0, r = A.size() - 1;
-        while (l + 1 < r) {
-            int mid = l + (r - l) / 2;
-            if (A[mid] < A[mid - 1]) {
-                r = mid;
-            } else if (A[mid] < A[mid + 1]) {
-                l = mid;
-            } else {
-                return mid;
-            }
-        }
-
-        int mid = A[l] > A[r] ? l : r;
-        return mid;
-    }
-};
-```
-
 ### Java
 
 ```java

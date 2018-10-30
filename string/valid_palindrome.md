@@ -27,74 +27,6 @@ For the purpose of this problem, we define empty string as valid palindrome.
 
 字符串的回文判断问题，由于字符串可随机访问，故逐个比较首尾字符是否相等最为便利，即常见的『两根指针』技法。此题忽略大小写，并只考虑字母和数字字符。链表的回文判断总结见 [Check if a singly linked list is palindrome](http://algorithm.yuanbin.me/zh-hans/linked_list/check_if_a_singly_linked_list_is_palindrome.html).
 
-### Python
-
-```python
-class Solution:
-    # @param {string} s A string
-    # @return {boolean} Whether the string is a valid palindrome
-    def isPalindrome(self, s):
-        if not s:
-            return True
-
-        l, r = 0, len(s) - 1
-
-        while l < r:
-            # find left alphanumeric character
-            if not s[l].isalnum():
-                l += 1
-                continue
-            # find right alphanumeric character
-            if not s[r].isalnum():
-                r -= 1
-                continue
-            # case insensitive compare
-            if s[l].lower() == s[r].lower():
-                l += 1
-                r -= 1
-            else:
-                return False
-        #
-        return True
-```
-
-### C++
-
-```c++
-class Solution {
-public:
-    /**
-     * @param s A string
-     * @return Whether the string is a valid palindrome
-     */
-    bool isPalindrome(string& s) {
-        if (s.empty()) return true;
-
-        int l = 0, r = s.size() - 1;
-        while (l < r) {
-            // find left alphanumeric character
-            if (!isalnum(s[l])) {
-                ++l;
-                continue;
-            }
-            // find right alphanumeric character
-            if (!isalnum(s[r])) {
-                --r;
-                continue;
-            }
-            // case insensitive compare
-            if (tolower(s[l]) == tolower(s[r])) {
-                ++l;
-                --r;
-            } else {
-                return false;
-            }
-        }
-
-        return true;
-    }
-};
-```
 
 ### Java
 
@@ -140,3 +72,5 @@ public class Solution {
 ### 复杂度分析
 
 两根指针遍历一次，时间复杂度 $$O(n)$$, 空间复杂度 $$O(1)$$.
+
+{% codesnippet "./code/valid-palindrome."+book.suffix, language=book.suffix %}{% endcodesnippet %}

@@ -17,59 +17,6 @@ Compute and return the square root of _x_.
 
 由于只需要求整数部分，故对于任意正整数 $$x$$, 设其整数部分为 $$k$$, 显然有 $$1 \leq k \leq x$$, 求解 $$k$$ 的值也就转化为了在有序数组中查找满足某种约束条件的元素，显然二分搜索是解决此类问题的良方。
 
-### Python
-
-```python
-class Solution(object):
-    def mySqrt(self, x):
-        """
-        :type x: int
-        :rtype: int
-        """
-        if x < 0:
-            return -1
-        elif x == 0:
-            return 0
-
-        lb, ub = 1, x
-        while lb + 1 < ub:
-            mid = (lb + ub) / 2
-            if mid**2 == x:
-                return mid
-            elif mid**2 < x:
-                lb = mid
-            else:
-                ub = mid
-
-        return lb
-```
-
-### C++
-
-```cpp
-class Solution {
-public:
-    int mySqrt(int x) {
-        if (x < 0) return -1;
-        if (x == 0) return 0;
-
-        int lb = 1, ub = x;
-        long long mid = 0;
-        while (lb + 1 < ub) {
-            mid = lb + (ub - lb) / 2;
-            if (mid * mid == x) {
-                return mid;
-            } else if (mid * mid < x) {
-                lb = mid;
-            } else {
-                ub = mid;
-            }
-        }
-
-        return lb;
-    }
-};
-```
 
 ### Java
 

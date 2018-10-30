@@ -18,66 +18,6 @@ needle is not part of haystack.
 
 对于字符串查找问题，可使用双重 for 循环解决，效率更高的则为 KMP 算法。双重 for 循环的使用较有讲究，因为这里需要考虑目标字符串比源字符串短的可能。对目标字符串的循环肯定是必要的，所以可以优化的地方就在于如何访问源字符串了。简单直观的解法是利用源字符串的长度作为 for 循环的截止索引，这种方法需要处理源字符串中剩余长度不足以匹配目标字符串的情况，而更为高效的方案则为仅遍历源字符串中有可能和目标字符串匹配的部分索引。
 
-### Python
-
-```python
-class Solution:
-    def strStr(self, source, target):
-        if source is None or target is None:
-            return -1
-
-        for i in range(len(source) - len(target) + 1):
-            for j in range(len(target)):
-                if source[i + j] != target[j]:
-                    break
-            else:  # no break
-                return i
-        return -1
-```
-
-### C
-
-```c
-int strStr(char* haystack, char* needle) {
-    if (haystack == NULL || needle == NULL) return -1;
-
-    const int len_h = strlen(haystack);
-    const int len_n = strlen(needle);
-    for (int i = 0; i < len_h - len_n + 1; i++) {
-        int j = 0;
-        for (; j < len_n; j++) {
-            if (haystack[i+j] != needle[j]) {
-                break;
-            }
-        }
-        if (j == len_n) return i;
-    }
-
-    return -1;
-}
-```
-
-### C++
-```c++
-class Solution {
-public:
-    int strStr(string haystack, string needle) {
-        if (haystack.empty() && needle.empty()) return 0;
-        if (haystack.empty()) return -1;
-        if (haystack.size() < needle.size()) return -1;
-
-        for (string::size_type i = 0; i < haystack.size() - needle.size() + 1; i++) {
-            string::size_type j = 0;
-            for (; j < needle.size(); j++) {
-                if (haystack[i + j] != needle[j]) break;
-            }
-            if (j == needle.size()) return i;
-        }
-        
-        return -1;
-    }
-};
-```
 
 ### Java
 

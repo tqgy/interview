@@ -31,53 +31,6 @@ O(n) time, O(1) extra space
 
 判断两个字符串是否互为变位词，若区分大小写，考虑空白字符时，直接来理解可以认为两个字符串的拥有各不同字符的数量相同。对于比较字符数量的问题常用的方法为遍历两个字符串，统计其中各字符出现的频次，若不等则返回`false`. 有很多简单字符串类面试题都是此题的变形题。
 
-### Python
-
-``` python
-class Solution:
-    """
-    @param s: The first string
-    @param b: The second string
-    @return true or false
-    """
-    def anagram(self, s, t):
-        return collections.Counter(s) == collections.Counter(t)
-```
-
-### C++
-
-```c++
-class Solution {
-public:
-    /**
-     * @param s: The first string
-     * @param b: The second string
-     * @return true or false
-     */
-    bool anagram(string s, string t) {
-        if (s.empty() || t.empty()) {
-            return false;
-        }
-        if (s.size() != t.size()) {
-            return false;
-        }
-
-        int letterCount[256] = {0};
-
-        for (int i = 0; i != s.size(); ++i) {
-            ++letterCount[s[i]];
-            --letterCount[t[i]];
-        }
-        for (int i = 0; i != t.size(); ++i) {
-            if (letterCount[t[i]] != 0) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-};
-```
 
 ### Java
 
@@ -123,49 +76,6 @@ public class Solution {
 ## 题解2 - 排序字符串
 
 另一直接的解法是对字符串先排序，若排序后的字符串内容相同，则其互为变位词。
-
-### Python
-
-```python
-class Solution:
-    """
-    @param s: The first string
-    @param b: The second string
-    @return true or false
-    """
-    def anagram(self, s, t):
-        return sorted(s) == sorted(t)
-```
-
-### C++
-
-```c++
-class Solution {
-public:
-    /**
-     * @param s: The first string
-     * @param b: The second string
-     * @return true or false
-     */
-    bool anagram(string s, string t) {
-        if (s.empty() || t.empty()) {
-            return false;
-        }
-        if (s.size() != t.size()) {
-            return false;
-        }
-
-        sort(s.begin(), s.end());
-        sort(t.begin(), t.end());
-
-        if (s == t) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-};
-```
 
 ### Java
 

@@ -165,73 +165,6 @@ class Solution {
 1. A[k/2 - 1] <= B[k/2 - 1] => A和B合并后的第k大数中必包含A[0]~A[k/2  -1]，可使用归并的思想去理解。
 2. 若k/2 - 1超出A的长度，则必取B[0]~B[k/2 - 1]
 
-### C++
-
-```c++
-class Solution {
-public:
-    /**
-     * @param A: An integer array.
-     * @param B: An integer array.
-     * @return: a double whose format is *.5 or *.0
-     */
-    double findMedianSortedArrays(vector<int> A, vector<int> B) {
-        if (A.empty() && B.empty()) {
-            return 0;
-        }
-
-        vector<int> NonEmpty;
-        if (A.empty()) {
-            NonEmpty = B;
-        }
-        if (B.empty()) {
-            NonEmpty = A;
-        }
-        if (!NonEmpty.empty()) {
-            vector<int>::size_type len_vec = NonEmpty.size();
-            return len_vec % 2 == 0 ?
-                    (NonEmpty[len_vec / 2 - 1] + NonEmpty[len_vec / 2]) / 2.0 :
-                    NonEmpty[len_vec / 2];
-        }
-
-        vector<int>::size_type len = A.size() + B.size();
-        if (len % 2 == 0) {
-            return ((findKth(A, 0, B, 0, len / 2) + findKth(A, 0, B, 0, len / 2 + 1)) / 2.0);
-        } else {
-            return findKth(A, 0, B, 0, len / 2 + 1);
-        }
-        // write your code here
-    }
-
-private:
-    int findKth(vector<int> &A, vector<int>::size_type A_start, vector<int> &B, vector<int>::size_type B_start, int k) {
-        if (A_start > A.size() - 1) {
-            // all of the element of A are smaller than the kTh number
-            return B[B_start + k - 1];
-        }
-        if (B_start > B.size() - 1) {
-            // all of the element of B are smaller than the kTh number
-            return A[A_start + k - 1];
-        }
-
-        if (k == 1) {
-            return A[A_start] < B[B_start] ? A[A_start] : B[B_start];
-        }
-
-        int A_key = A_start + k / 2 - 1 < A.size() ?
-                    A[A_start + k / 2 - 1] : INT_MAX;
-        int B_key = B_start + k / 2 - 1 < B.size() ?
-                    B[B_start + k / 2 - 1] : INT_MAX;
-
-        if (A_key > B_key) {
-            return findKth(A, A_start, B, B_start + k / 2, k - k / 2);
-        } else {
-            return findKth(A, A_start + k / 2, B, B_start, k - k / 2);
-        }
-    }
-};
-```
-
 ### Java
 
 ```java
@@ -302,6 +235,43 @@ class Solution {
 ### 复杂度分析
 
 找中位数，K 为数组长度和的一半，故总的时间复杂度为 $$O(\log (m+n))$$.
+
+
+
+### 分析
+
+这是一道非常经典的题。这题更通用的形式是，给定两个已经排序好的数组，找到两者所有元素中第`k`大的元素。
+
+`O(m+n)`的解法比较直观，直接merge两个数组，然后求第`k`大的元素。
+
+不过我们仅仅需要第`k`大的元素，是不需要“排序”这么昂贵的操作的。可以用一个计数器，记录当前已经找到第`m`大的元素了。同时我们使用两个指针`pA`和`pB`，分别指向A和B数组的第一个元素，使用类似于merge sort的原理，如果数组A当前元素小，那么`pA++`，同时`m++`；如果数组B当前元素小，那么`pB++`，同时`m++`。最终当`m`等于`k`的时候，就得到了我们的答案，`O(k)`时间，`O(1)`空间。但是，当`k`很接近`m+n`的时候，这个方法还是`O(m+n)`的。
+
+有没有更好的方案呢？我们可以考虑从`k`入手。如果我们每次都能够删除一个一定在第`k`大元素之前的元素，那么我们需要进行`k`次。但是如果每次我们都删除一半呢？由于A和B都是有序的，我们应该充分利用这里面的信息，类似于二分查找，也是充分利用了“有序”。
+
+假设A和B的元素个数都大于`k/2`，我们将A的第`k/2`个元素（即`A[k/2-1]`）和B的第`k/2`个元素（即`B[k/2-1]`）进行比较，有以下三种情况（为了简化这里先假设`k`为偶数，所得到的结论对于`k`是奇数也是成立的）：
+
+* `A[k/2-1] == B[k/2-1]`
+* `A[k/2-1] > B[k/2-1]`
+* `A[k/2-1] < B[k/2-1]`
+
+如果`A[k/2-1] < B[k/2-1]`，意味着`A[0]`到`A[k/2-1]`的肯定在$$A \cup B$$的top k元素的范围内，换句话说，`A[k/2-1]`不可能大于$$A \cup B$$的第`k`大元素。留给读者证明。
+
+因此，我们可以放心的删除A数组的这`k/2`个元素。同理，当`A[k/2-1] > B[k/2-1]`时，可以删除B数组的`k/2`个元素。
+
+当`A[k/2-1] == B[k/2-1]`时，说明找到了第`k`大的元素，直接返回`A[k/2-1]`或`B[k/2-1]`即可。
+
+因此，我们可以写一个递归函数。那么函数什么时候应该终止呢？
+
+* 当A或B是空时，直接返回`B[k-1]`或`A[k-1]`；
+* 当`k=1`是，返回`min(A[0], B[0])`；
+* 当`A[k/2-1] == B[k/2-1]`时，返回`A[k/2-1]`或`B[k/2-1]`
+
+
+### 代码
+
+{% if book.java %}
+{% codesnippet "./code/median-of-two-sorted-arrays."+book.suffix, language=book.suffix %}{% endcodesnippet %}
+{% endif %}
 
 ## Reference
 

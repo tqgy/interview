@@ -17,7 +17,7 @@ Could you do this in-place?
 
 如下图，首先沿着副对角线翻转一次，然后沿着水平中线翻转一次。
 
-![Rotate image](../../images/rotate-image.png)
+![Rotate image](../images/rotate-image.png)
 
 或者，首先沿着水平中线翻转一次，然后沿着主对角线翻转一次。
 

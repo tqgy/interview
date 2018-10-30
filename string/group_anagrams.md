@@ -26,35 +26,6 @@ Return:
 
 题 [Two Strings Are Anagrams](../two_strings_are_anagrams.html) 的升级版，容易想到的方法为使用双重`for`循环两两判断字符串数组是否互为变位字符串。但显然此法的时间复杂度较高。还需要 $$O(n)$$ 的数组来记录字符串是否被加入到最终结果中。
 
-### Python
-
-```python
-class Solution:
-    # @param strs: A list of strings
-    # @return: A list of strings
-    # @return: A list of strings
-    def anagrams(self, strs):
-
-        if len(strs) < 2 :
-            return strs
-        result=[]
-        visited=[False]*len(strs)
-        for index1,s1 in enumerate(strs):
-            hasAnagrams = False
-            for index2,s2 in enumerate(strs):
-                if index2 > index1 and not visited[index2] and self.isAnagrams(s1,s2):
-                    result.append(s2)
-                    visited[index2]=True
-                    hasAnagrams = True
-            if not visited[index1] and hasAnagrams:
-                result.append(s1)
-        return result
-
-    def isAnagrams(self, str1, str2):
-        if  sorted (str1) == sorted(str2):
-                return True
-        return False
-```
 
 ### C++
 
@@ -126,60 +97,6 @@ private:
 在题 [Two Strings Are Anagrams](http://algorithm.yuanbin.me/zh-hans/string/two_strings_are_anagrams.html) 中曾介绍过使用排序和 hashmap 两种方法判断变位词。这里我们将这两种方法同时引入！只不过此时的 hashmap 的 key 为字符串，value 为该字符串在 vector 中出现的次数。两次遍历字符串数组，第一次遍历求得排序后的字符串数量，第二次遍历将排序后相同的字符串取出放入最终结果中。
 
 **leetcode 上此题的 signature 已经更新，需要将 anagrams 按组输出，稍微麻烦一点点。**
-
-### Python lintcode
-
-```python 
-class Solution:
-    # @param strs: A list of strings
-    # @return: A list of strings
-    # @return: A list of strings
-    def anagrams(self, strs):
-        strDict={}
-        result=[]
-        for string in strs:
-            if  "".join(sorted(string)) not in strDict.keys():
-                strDict["".join(sorted(string))] = 1
-            else: 
-                strDict["".join(sorted(string))] += 1
-        for string in strs:
-            if strDict["".join(sorted(string))] >1:
-                result.append(string)
-        return result
-```
-
-
-### C++ - lintcode
-
-```c++
-class Solution {
-public:
-    /**
-     * @param strs: A list of strings
-     * @return: A list of strings
-     */
-    vector<string> anagrams(vector<string> &strs) {
-        unordered_map<string, int> hash;
-
-        for (int i = 0; i < strs.size(); i++) {
-            string str = strs[i];
-            sort(str.begin(), str.end());
-            ++hash[str];
-        }
-
-        vector<string> result;
-        for (int i = 0; i < strs.size(); i++) {
-            string str = strs[i];
-            sort(str.begin(), str.end());
-            if (hash[str] > 1) {
-                result.push_back(strs[i]);
-            }
-        }
-
-        return result;
-    }
-};
-```
 
 ### Java - leetcode
 

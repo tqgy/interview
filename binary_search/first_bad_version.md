@@ -41,66 +41,6 @@ You should call _isBadVersion_ as few as possible.
 
 基础算法中 [Binary Search](http://algorithm.yuanbin.me/zh-hans/basics_algorithm/binary_search.html) 的 lower bound. 找出满足条件的下界即可。
 
-### Python
-
-```python
-#class VersionControl:
-#    @classmethod
-#    def isBadVersion(cls, id)
-#        # Run unit tests to check whether verison `id` is a bad version
-#        # return true if unit tests passed else false.
-# You can use VersionControl.isBadVersion(10) to check whether version 10 is a
-# bad version.
-class Solution:
-    """
-    @param n: An integers.
-    @return: An integer which is the first bad version.
-    """
-    def findFirstBadVersion(self, n):
-        lb, ub = 0, n + 1
-        while lb + 1 < ub:
-            mid = lb + (ub - lb) / 2
-            if VersionControl.isBadVersion(mid):
-                ub = mid
-            else:
-                lb = mid
-
-        return lb + 1
-```
-
-### C++
-
-```c++
-/**
- * class VersionControl {
- *     public:
- *     static bool isBadVersion(int k);
- * }
- * you can use VersionControl::isBadVersion(k) to judge whether
- * the kth code version is bad or not.
-*/
-class Solution {
-public:
-    /**
-     * @param n: An integers.
-     * @return: An integer which is the first bad version.
-     */
-    int findFirstBadVersion(int n) {
-        int lb = 0, ub = n + 1;
-        while (lb + 1 < ub) {
-            int mid = lb + (ub - lb) / 2;
-            if (VersionControl::isBadVersion(mid)) {
-                ub = mid;
-            } else {
-                lb = mid;
-            }
-        }
-
-        return lb + 1;
-    }
-};
-```
-
 ### Java
 
 ```java

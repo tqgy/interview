@@ -90,63 +90,6 @@ public:
 
 既然题解1存在较大的优化空间，那我们该从哪一点出发进行优化呢？擒贼先擒王，题解1中时间复杂度最高的地方在于双重`for`循环，在对第二个索引进行遍历时，`j`每次都从`i`处开始遍历，要是`j`能从链表尾部往前遍历该有多好啊！这样就能大大降低时间复杂度了，可惜本题的链表只是单向链表... 有什么特技可以在单向链表中进行反向遍历吗？还真有——反转链表！一语惊醒梦中人。
 
-### C++
-
-```c++
-/**
- * Definition of ListNode
- * class ListNode {
- * public:
- *     int val;
- *     ListNode *next;
- *     ListNode(int val) {
- *         this->val = val;
- *         this->next = NULL;
- *     }
- * }
- */
-class Solution {
-public:
-    /**
-     * @param head: The first node of linked list.
-     * @return: void
-     */
-    void reorderList(ListNode *head) {
-        if (head == NULL || head->next == NULL) return;
-
-        // find middle
-        ListNode *slow = head, *fast = head->next;
-        while (fast != NULL && fast->next != NULL) {
-            slow = slow->next;
-            fast = fast->next->next;
-        }
-        ListNode *rHead = slow->next;
-        slow->next = NULL;
-
-        // reverse ListNode on the right side
-        ListNode *prev = NULL;
-        while (rHead != NULL) {
-            ListNode *temp = rHead->next;
-            rHead->next = prev;
-            prev = rHead;
-            rHead = temp;
-        }
-
-        // merge two list
-        rHead = prev;
-        ListNode *lHead = head;
-        while (lHead != NULL && rHead != NULL) {
-            ListNode *temp1 = lHead->next;
-            lHead->next = rHead;
-            ListNode *temp2 = rHead->next;
-            rHead->next = temp1;
-            lHead = temp1;
-            rHead = temp2;
-        }
-    }
-};
-```
-
 ### Java
 
 ```java
@@ -212,6 +155,18 @@ public class Solution {
 ### 复杂度分析
 
 找中点一次，时间复杂度近似为 $$O(n)$$. 反转链表一次，时间复杂度近似为 $$O(n/2)$$. 合并左右链表一次，时间复杂度近似为 $$O(n/2)$$. 故总的时间复杂度为 $$O(n)$$.
+
+### 分析
+
+题目规定要in-place，也就是说只能使用`O(1)`的空间。
+
+可以找到中间节点，断开，把后半截单链表reverse一下，再合并两个单链表。
+
+
+### 代码
+
+{% codesnippet "./code/reorder-list."+book.suffix, language=book.suffix %}{% endcodesnippet %}
+
 
 ## Reference
 

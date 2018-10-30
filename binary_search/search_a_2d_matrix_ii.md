@@ -37,67 +37,6 @@ O(m+n) time and O(1) extra space
 
 **在遇到之前没有遇到过的复杂题目时，可先使用简单的数据进行测试去帮助发现规律。**
 
-### Python
-```python
-class Solution:
-    """
-    @param matrix: An list of lists of integers
-    @param target: An integer you want to search in matrix
-    @return: An integer indicates the total occurrence of target in the given matrix
-    """
-    def searchMatrix(self, matrix, target):
-        if not matrix or not matrix[0]:
-            return 0
-        occur = 0
-        row, col = 0, len(matrix[0])-1
-        while row < len(matrix) and col >= 0:
-            if matrix[row][col] == target:
-                occur += 1
-                col -= 1
-            elif matrix[row][col] < target:
-                row += 1
-            else:
-                col -= 1
-        return occur
-```
-
-
-### C++
-
-```c++
-class Solution {
-public:
-    /**
-     * @param matrix: A list of lists of integers
-     * @param target: An integer you want to search in matrix
-     * @return: An integer indicate the total occurrence of target in the given matrix
-     */
-    int searchMatrix(vector<vector<int> > &matrix, int target) {
-        if (matrix.empty() || matrix[0].empty()) {
-            return 0;
-        }
-
-        const int ROW = matrix.size();
-        const int COL = matrix[0].size();
-
-        int row = 0, col = COL - 1;
-        int occur = 0;
-        while (row < ROW && col >= 0) {
-            if (target == matrix[row][col]) {
-                ++occur;
-                --col;
-            } else if (target < matrix[row][col]){
-                --col;
-            } else {
-                ++row;
-            }
-        }
-
-        return occur;
-    }
-};
-```
-
 ### Java
 
 ```java
@@ -141,6 +80,16 @@ public class Solution {
 ### 复杂度分析
 
 由于每行每列遍历一次，故时间复杂度为 $$O(m + n)$$.
+
+
+### 分析
+
+已经排好了序，用二分查找。
+
+
+### 重新实现 lower_bound 和 upper_bound
+
+{% codesnippet "./code/search-for-a-range."+book.suffix, language=book.suffix %}{% endcodesnippet %}
 
 ## Reference
 

@@ -24,87 +24,6 @@ return `1->2->2->4->3->5`.
 
 这种分割的题使用两路指针即可轻松解决。左边指针指向小于x的节点，右边指针指向不小于x的节点。由于左右头节点不确定，我们可以使用两个dummy节点。
 
-### Python
-
-```python
-"""
-Definition of ListNode
-class ListNode(object):
-
-    def __init__(self, val, next=None):
-        self.val = val
-        self.next = next
-"""
-class Solution:
-    """
-    @param head: The first node of linked list.
-    @param x: an integer
-    @return: a ListNode
-    """
-    def partition(self, head, x):
-        if head is None:
-            return None
-
-        leftDummy = ListNode(0)
-        left = leftDummy
-        rightDummy = ListNode(0)
-        right = rightDummy
-        node = head
-        while node is not None:
-            if node.val < x:
-                left.next = node
-                left = left.next
-            else:
-                right.next = node
-                right = right.next
-            node = node.next
-        # post-processing
-        right.next = None
-        left.next = rightDummy.next
-
-        return leftDummy.next
-```
-
-### C++
-
-```c++
-/**
- * Definition for singly-linked list.
- * struct ListNode {
- *     int val;
- *     ListNode *next;
- *     ListNode(int x) : val(x), next(NULL) {}
- * };
- */
-class Solution {
-public:
-    ListNode* partition(ListNode* head, int x) {
-        if (head == NULL) return NULL;
-
-        ListNode *leftDummy = new ListNode(0);
-        ListNode *left = leftDummy;
-        ListNode *rightDummy = new ListNode(0);
-        ListNode *right = rightDummy;
-        ListNode *node = head;
-        while (node != NULL) {
-            if (node->val < x) {
-                left->next = node;
-                left = left->next;
-            } else {
-                right->next = node;
-                right = right->next;
-            }
-            node = node->next;
-        }
-        // post-processing
-        right->next = NULL;
-        left->next = rightDummy->next;
-
-        return leftDummy->next;
-    }
-};
-```
-
 ### Java
 
 ```java
@@ -154,3 +73,5 @@ public class Solution {
 ### 复杂度分析
 
 遍历链表一次，时间复杂度近似为 $$O(n)$$, 使用了两个 dummy 节点及中间变量，空间复杂度近似为 $$O(1)$$.
+
+{% codesnippet "./code/partition-list."+book.suffix, language=book.suffix %}{% endcodesnippet %}

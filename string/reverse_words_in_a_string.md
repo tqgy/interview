@@ -38,56 +38,6 @@ Reduce them to a single space in the reversed string.
 
 首先找到各个单词(以空格隔开)，根据题目要求，单词应从后往前依次放入。split 后从后往前加入空格返回即可。如果不使用 split 的话正向取出比较麻烦，因此可尝试采用逆向思维——先将输入字符串数组中的单词从后往前逆序取出，取出单词后即翻转并append至新字符串数组。在append之前加入空格即可，即两次翻转法。
 
-### Python
-
-```python
-class Solution(object):
-    def reverseWords(self, s):
-        """
-        :type s: str
-        :rtype: str
-        """
-        return ' '.join(reversed(s.strip().split()))
-```
-
-### C++
-
-```c++
-class Solution {
-public:
-    /**
-     * @param s : A string
-     * @return : A string
-     */
-    string reverseWords(string s) {
-        if (s.empty()) {
-            return s;
-        }
-
-        string s_ret, s_temp;
-        string::size_type ix = s.size();
-        while (ix != 0) {
-            s_temp.clear();
-            while (!isspace(s[--ix])) {
-                s_temp.push_back(s[ix]);
-                if (ix == 0) {
-                    break;
-                }
-            }
-            if (!s_temp.empty()) {
-                if (!s_ret.empty()) {
-                    s_ret.push_back(' ');
-                }
-                std::reverse(s_temp.begin(), s_temp.end());
-                s_ret.append(s_temp);
-            }
-        }
-
-        return s_ret;
-    }
-};
-```
-
 ### Java
 
 ```java

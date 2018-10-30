@@ -75,3 +75,12 @@ public class Solution {
 ### 复杂度分析
 
 时间复杂度 $$O(n)$$, 空间复杂度 $$O(1)$$.
+
+### 分析
+
+先遍历一遍，得出链表长度`len`，注意`k`可能大于`len`，因此令`k %= len`。将尾节点next指针指向首节点，形成一个环，接着往后跑`len-k`步，从这里断开，就是要求的结果了。
+
+
+### 代码
+
+{% codesnippet "./code/rotate-list."+book.suffix, language=book.suffix %}{% endcodesnippet %}

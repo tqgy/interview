@@ -41,52 +41,6 @@ O(log(n) + log(m)) time
 
 ## 一次二分搜索
 
-### Python
-
-```python
-class Solution:
-    def search_matrix(self, matrix, target):
-        # Find the first position of target
-        if not matrix or not matrix[0]:
-            return False
-        m, n = len(matrix), len(matrix[0])
-        st, ed = 0, m * n - 1
-
-        while st + 1 < ed:
-            mid = (st + ed) / 2
-            if matrix[mid / n][mid % n] == target:
-                return True
-            elif matrix[mid / n][mid % n] < target:
-                st = mid
-            else:
-                ed = mid
-        return matrix[st / n][st % n] == target or \
-                matrix[ed / n][ed % n] == target
-```
-
-### C++
-```c++
-class Solution {
-public:
-    bool searchMatrix(vector<vector<int>>& matrix, int target) {
-        if (matrix.empty() || matrix[0].empty()) return false;
-
-        int ROW = matrix.size(), COL = matrix[0].size();
-        int lb = -1, ub = ROW * COL;
-        while (lb + 1 < ub) {
-            int mid = lb + (ub - lb) / 2;
-            if (matrix[mid / COL][mid % COL] < target) {
-                lb = mid;
-            } else {
-                if (matrix[mid / COL][mid % COL] == target) return true;
-                ub = mid;
-            }
-        }
-        return false;
-    }
-};
-```
-
 ### Java
 lower bound 二分模板。
 ```java
@@ -178,3 +132,5 @@ class Solution:
 
 #### 复杂度分析
 二分搜索， $$O(\log m + \log n)$$
+
+{% codesnippet "./code/search-a-2d-matrix."+book.suffix, language=book.suffix %}{% endcodesnippet %}

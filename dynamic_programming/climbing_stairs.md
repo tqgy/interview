@@ -61,18 +61,6 @@ public:
 
 以上答案的空间复杂度为 $$O(n)$$，仔细观察后可以发现在状态转移方程中，我们可以使用三个变量来替代长度为n+1的数组。具体代码可参考 [climbing-stairs | 九章算法 ](http://www.jiuzhang.com/solutions/climbing-stairs/)
 
-### Python
-```python
-class Solution:
-    def climbStairs(n):
-        if n < 1:
-            return 0
-
-        l = r = 1
-        for _ in xrange(n - 1):
-            l, r = r, r + l
-        return r
-```
 
 ### C++
 

@@ -41,55 +41,6 @@ Can you do it without getting the length of the linked list?
 
 简单题，使用快慢指针解决此题，需要注意最后删除的是否为头节点。让快指针先走`n`步，直至快指针走到终点，找到需要删除节点之前的一个节点，改变`node->next`域即可。见基础数据结构部分的链表解析。
 
-### C++
-
-```cpp
-/**
- * Definition of ListNode
- * class ListNode {
- * public:
- *     int val;
- *     ListNode *next;
- *     ListNode(int val) {
- *         this->val = val;
- *         this->next = NULL;
- *     }
- * }
- */
-class Solution {
-public:
-    /**
-     * @param head: The first node of linked list.
-     * @param n: An integer.
-     * @return: The head of linked list.
-     */
-    ListNode *removeNthFromEnd(ListNode *head, int n) {
-        if (NULL == head || n < 1) {
-            return head;
-        }
-
-        ListNode dummy(0);
-        dummy.next = head;
-        ListNode *preDel = dummy;
-
-        for (int i = 0; i != n; ++i) {
-            if (NULL == head) {
-                return NULL;
-            }
-            head = head->next;
-        }
-
-        while (head) {
-            head = head->next;
-            preDel = preDel->next;
-        }
-        preDel->next = preDel->next->next;
-
-        return dummy.next;
-    }
-};
-```
-
 ### Java
 
 ```java
@@ -136,3 +87,11 @@ class Solution {
 ### 复杂度分析
 
 极限情况下遍历两遍链表，时间复杂度为 $$O(n)$$.
+
+### 分析
+
+设两个指针`p`,`q`，让`q`先走`n`步，然后`p`和`q`一起走，直到`q`走到尾节点，删除`p->next`即可。
+
+### 代码
+
+{% codesnippet "./code/remove-nth-node-from-end-of-list."+book.suffix, language=book.suffix %}{% endcodesnippet %}
